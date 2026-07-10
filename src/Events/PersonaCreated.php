@@ -15,9 +15,8 @@ class PersonaCreated
      * @param  Persona  $persona  The Persona profile related to the event.
      * @return void Returns nothing.
      */
-    public function __construct(
-        public Persona $persona
-    ) {
+    public function __construct(public Persona $persona)
+    {
         //
     }
 }
