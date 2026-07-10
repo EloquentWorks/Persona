@@ -37,7 +37,8 @@ class PersonaServiceProvider extends ServiceProvider
         // Load the Persona views from the package's resources/views directory for use in the application.
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'persona');
 
-        // Load the Persona routes from the package's routes file.
+
+        // If we are not running in the console, skip the following console-specific bootstrapping.
         if (! $this->app->runningInConsole()) {
             return;
         }
@@ -106,14 +107,20 @@ class PersonaServiceProvider extends ServiceProvider
                 $controller = PersonaController::class;
             }
 
-            // Ensure the prefix, path, and name are properly formatted.
+            // Trim the prefix and path to remove any leading or trailing slashes, and construct the full URI for the route.
             $prefix = trim((string) $prefix, '/');
             $path = trim((string) $path, '/');
             $uri = trim($prefix.'/'.$path, '/');
-            $name = Str::finish((string) $name, '.');
 
-            // Register the route for showing a Persona profile.
-            $router->get($uri, [$controller, 'show'])->middleware($middleware)->name($name.'show');
+            // Determine the route name for the 'show' action, ensuring it ends with '.show'.
+            $routeName = str_ends_with((string) $name, '.show')
+                ? (string) $name
+                : Str::finish((string) $name, '.').'show';
+
+            // Register the GET route for the public profile page, associating it with the specified controller and middleware.
+            $router->get($uri, [$controller, 'show'])
+                ->middleware($middleware)
+                ->name($routeName);
 
             // Refresh the route name and action lookups to ensure the new route is recognized.
             $router->getRoutes()->refreshNameLookups();
