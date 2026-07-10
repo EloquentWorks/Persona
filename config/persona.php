@@ -55,14 +55,13 @@ return [
     */
 
     'routes' => [
-        'enabled' => true,
         'prefix' => '',
+        'path' => '@{persona}',
         'middleware' => ['web'],
         'name' => 'persona.',
         'show_name' => 'persona.show',
         'controller' => PersonaController::class,
         'parameter' => 'persona',
-        'path' => '@{persona}',
     ],
 
     /*
@@ -136,8 +135,8 @@ return [
     |
     | These settings control limits for common public profile fields.
     |
-    | Validation rules in your package may reference these values so consuming
-    | applications can adjust profile limits without modifying source code.
+    | Validation rules and form requests may reference these values so users can
+    | adjust profile limits without modifying the package source code.
     |
     */
 
@@ -174,13 +173,14 @@ return [
     | Persona may store social links and custom links as JSON.
     |
     | You can use these settings to limit how many links a profile may display
-    | and which social platforms are officially supported.
+    | and which social platforms are officially supported by your application.
     |
     */
 
     'links' => [
         'max_social_links' => 10,
         'max_custom_links' => 10,
+
         'allowed_social_platforms' => [
             'github',
             'linkedin',
