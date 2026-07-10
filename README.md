@@ -14,25 +14,13 @@ $profile->recordView();
 $profile->avatarUrl();
 ```
 
-## Features
+## Supported Versions
 
-- Public user profiles
-- Slug-based profile URLs
-- Display names, headlines, bios, and locations
-- Avatar and banner support
-- Website, social links, and custom links
-- Public and private profile visibility
-- Published profile controls
-- Profile view tracking
-- Query scopes for public, published, and visible profiles
-- Publishable views
-- Configurable model and table names
+| Package Version | PHP | Laravel / Illuminate |
+| --- | --- | --- |
+| Current | `^8.2` | `^12.0 \|\| ^13.0` |
 
-## Requirements
-
-- PHP 8.2+
-- Laravel 11, 12, or 13
-- A user model that extends Eloquent
+> Laravel 12 supports PHP 8.2+. Laravel 13 requires PHP 8.3+. Composer will automatically resolve compatible versions based on your project.
 
 ## Installation
 
@@ -71,6 +59,20 @@ class User extends Authenticatable
     use HasPersona;
 }
 ```
+
+## Features
+
+- Public user profiles
+- Slug-based profile URLs
+- Display names, headlines, bios, and locations
+- Avatar and banner support
+- Website, social links, and custom links
+- Public and private profile visibility
+- Published profile controls
+- Profile view tracking
+- Query scopes for public, published, and visible profiles
+- Publishable views
+- Configurable model and table names
 
 ## Basic usage
 
