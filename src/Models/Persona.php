@@ -33,8 +33,6 @@ use Illuminate\Support\Facades\Storage;
  * @method static Builder<static> public()
  * @method static Builder<static> published()
  * @method static Builder<static> visible()
- *
- * @extends Model<static>
  */
 class Persona extends Model
 {
