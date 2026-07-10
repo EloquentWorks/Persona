@@ -1,5 +1,6 @@
-[![tests](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml/badge.svg)](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml)
-![License](https://img.shields.io/packagist/l/eloquent-works/persona.svg)
+[![Laravel Persona](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml/badge.svg)](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/EloquentWorks/Persona/total)
+
 
 # Persona Documentation
 
