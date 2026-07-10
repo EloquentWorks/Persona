@@ -24,20 +24,20 @@ class PersonaController extends Controller
     {
         // Resolve the Persona profile based on the provided slug.
         $profile = $this->resolveProfile($persona);
-    
+
         // Record a view for the profile if profile views are enabled in the configuration.
         if (config('persona.features.profile_views', true)) {
             $profile->recordView();
         }
-    
+
         // Dispatch a PersonaViewed event if event dispatching is enabled in the configuration.
         if (config('persona.dispatch_events', true)) {
             event(new PersonaViewed($profile));
         }
-    
+
         // Determine the view to use for rendering the profile, falling back to a default if not configured.
         $view = config('persona.views.show', 'persona::show');
-    
+
         // Render the profile view with the resolved profile and associated user data.
         return view(is_string($view) && $view !== '' ? $view : 'persona::show', [
             'persona' => $profile,
