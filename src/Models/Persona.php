@@ -12,17 +12,17 @@ use Illuminate\Support\Facades\Storage;
  */
 class Persona extends Model
 {
-	/** @var list<string> $fillable The attributes that are mass assignable. */
+    /** @var list<string> The attributes that are mass assignable. */
     protected $fillable = [
         'user_id', 'slug', 'display_name', 'headline', 'bio', 'location',
         'website_url', 'avatar_path', 'banner_path', 'social_links',
         'custom_links', 'metadata', 'is_public', 'profile_views', 'published_at',
     ];
 
-    /** @var array<string, string> $casts The attributes that should be cast. */
+    /** @var array<string, string> The attributes that should be cast. */
     protected $casts = [
         'social_links' => 'array', 'custom_links' => 'array', 'metadata' => 'array',
-        'is_public' => 'boolean', 'profile_views' => 'integer', 'published_at'  => 'datetime',
+        'is_public' => 'boolean', 'profile_views' => 'integer', 'published_at' => 'datetime',
     ];
 
     /**
@@ -124,7 +124,7 @@ class Persona extends Model
     public function avatarUrl(?string $disk = null): ?string
     {
         // If there is no avatar path, return null
-        if (!$this->avatar_path) {
+        if (! $this->avatar_path) {
             return null;
         }
 
@@ -141,7 +141,7 @@ class Persona extends Model
     public function bannerUrl(?string $disk = null): ?string
     {
         // If there is no banner path, return null
-        if (!$this->banner_path) {
+        if (! $this->banner_path) {
             return null;
         }
 

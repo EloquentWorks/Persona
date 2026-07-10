@@ -53,7 +53,7 @@ class PersonaController extends Controller
         $personaModel = config('persona.models.persona', Persona::class);
 
         // Validate that the resolved model is a string and is a subclass of the Eloquent Model class.
-        if (!is_string($personaModel) || !is_subclass_of($personaModel, Model::class)) {
+        if (! is_string($personaModel) || ! is_subclass_of($personaModel, Model::class)) {
             throw new LogicException('Unable to resolve the configured Persona model.');
         }
 

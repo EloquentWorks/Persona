@@ -19,7 +19,7 @@ class PersonaModelTest extends TestCase
     #[Test]
     public function it_casts_json_boolean_integer_and_date_columns(): void
     {
-        $persona = new Persona();
+        $persona = new Persona;
 
         $persona->forceFill([
             'social_links' => ['github' => 'https://github.com/example'],

@@ -43,7 +43,7 @@ trait HasPersona
     public function createPersona(array $attributes = []): Persona
     {
         // Ensure the user_id is set to the current model's primary key.
-        if (!array_key_exists('slug', $attributes)) {
+        if (! array_key_exists('slug', $attributes)) {
             $attributes['slug'] = app(SlugGenerator::class)->forModel($this, $attributes);
         }
 
@@ -66,7 +66,7 @@ trait HasPersona
         $profile = $this->persona()->first();
 
         // If no profile exists, create a new one with the provided attributes.
-        if (!$profile) {
+        if (! $profile) {
             // Create a new Persona profile if one does not exist.
             return $this->createPersona($attributes);
         }

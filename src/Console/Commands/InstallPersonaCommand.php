@@ -13,13 +13,13 @@ use Illuminate\Console\Command;
  */
 class InstallPersonaCommand extends Command
 {
-    /** @var string $signature The name and signature of the console command. */
+    /** @var string The name and signature of the console command. */
     protected $signature = 'persona:install
         {--force : Overwrite any existing published files}
         {--views : Publish Persona views}
         {--routes : Publish a copyable Persona route snippet}';
 
-    /** @var string $description The console command description. */
+    /** @var string The console command description. */
     protected $description = 'Install the Persona package by publishing config, migrations, and optional assets.';
 
     /**

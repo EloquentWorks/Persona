@@ -38,7 +38,7 @@ class PersonaServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'persona');
 
         // Load the Persona routes from the package's routes file.
-        if (!$this->app->runningInConsole()) {
+        if (! $this->app->runningInConsole()) {
             return;
         }
 
@@ -97,12 +97,12 @@ class PersonaServiceProvider extends ServiceProvider
             $controller = $options['controller'] ?? $config['controller'] ?? PersonaController::class;
 
             // Ensure the middleware is either an array or a string; if not, default to ['web'].
-            if (!is_array($middleware) && !is_string($middleware)) {
+            if (! is_array($middleware) && ! is_string($middleware)) {
                 $middleware = ['web'];
             }
 
-            // Ensure the controller is a valid class name; if not, default to PersonaController.   
-            if (!is_string($controller)) {
+            // Ensure the controller is a valid class name; if not, default to PersonaController.
+            if (! is_string($controller)) {
                 $controller = PersonaController::class;
             }
 
