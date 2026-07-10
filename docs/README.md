@@ -1,10 +1,10 @@
-[![Laravel Persona](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml/badge.svg)](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml)
+[![EloquentWorks Persona](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml/badge.svg)](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml)
 
-# Laravel Persona
+# EloquentWorks Persona
 
 A lightweight public profile package for Laravel applications.
 
-Laravel Persona provides slug-based public profiles with display names, bios, avatars, banners, social links, custom links, visibility controls, published profiles, and view tracking.
+EloquentWorks Persona provides slug-based public profiles with display names, bios, avatars, banners, social links, custom links, visibility controls, published profiles, and view tracking.
 
 ## Documentation
 
