@@ -58,6 +58,7 @@ return new class extends Migration
 
             // Optional social links for the profile, stored as a JSON object to allow for flexible data structures.
             $table->json('social_links')->nullable();
+            $table->json('custom_links')->nullable();
             $table->json('metadata')->nullable();
 
             // Optional timestamp for when the profile was published, allowing for scheduling and visibility control.

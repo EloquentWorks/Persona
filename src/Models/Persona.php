@@ -5,10 +5,36 @@ namespace EloquentWorks\Persona\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 /**
  * This model is used to manage user profiles, including their display name, bio, social links, and other related information.
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $slug
+ * @property string|null $display_name
+ * @property string|null $headline
+ * @property string|null $bio
+ * @property string|null $location
+ * @property string|null $website_url
+ * @property string|null $avatar_path
+ * @property string|null $banner_path
+ * @property array<string, mixed>|null $social_links
+ * @property array<string, mixed>|null $custom_links
+ * @property array<string, mixed>|null $metadata
+ * @property bool $is_public
+ * @property int $profile_views
+ * @property Carbon|null $published_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
+ * @method static Builder<static> public()
+ * @method static Builder<static> published()
+ * @method static Builder<static> visible()
+ *
+ * @extends Model<static>
  */
 class Persona extends Model
 {
@@ -21,141 +47,140 @@ class Persona extends Model
 
     /** @var array<string, string> The attributes that should be cast. */
     protected $casts = [
-        'social_links' => 'array', 'custom_links' => 'array', 'metadata' => 'array',
-        'is_public' => 'boolean', 'profile_views' => 'integer', 'published_at' => 'datetime',
+        'social_links' => 'array',
+        'custom_links' => 'array',
+        'metadata' => 'array',
+        'is_public' => 'boolean',
+        'profile_views' => 'integer',
+        'published_at' => 'datetime',
     ];
 
     /**
-     * Get the table name for the Persona model.
+     * Get the table associated with the model.
      *
-     * @return string The name of the table associated with the Persona model.
+     * @return string Returns the name of the table associated with this model.
      */
     public function getTable(): string
     {
+        // Return the name of the table associated with this model, which is configurable via the 'persona.tables.profiles' configuration option, defaulting to 'persona_profiles'.
         return config('persona.tables.profiles', 'persona_profiles');
     }
 
     /**
-     * Use the slug for route model binding.
+     * Get the route key name for the model.
      *
-     * @return string The name of the route key for this model.
+     * @return string Returns the name of the route key for this model.
      */
     public function getRouteKeyName(): string
     {
+        // Return the name of the route key for this model, which is 'slug'.
         return 'slug';
     }
 
     /**
-     * Get the user that owns this Persona profile.
-     *
-     * @return BelongsTo The relationship instance linking the Persona profile to the user model.
+     * @return BelongsTo<Model, $this>
      */
     public function user(): BelongsTo
     {
-        // Retrieve the user model class from the configuration, falling back to the default user model if not set.
         $userModel = config('persona.models.user') ?? config('auth.providers.users.model');
 
-        // Return the relationship to the user model, using the user_id foreign key.
         return $this->belongsTo($userModel, 'user_id');
     }
 
     /**
-     * Scope the query to public profiles.
-     *
-     * @param  Builder  $query  The query builder instance.
-     * @return Builder The modified query builder instance.
+     * @param  Builder<static>  $query
+     * @return Builder<static>
      */
     public function scopePublic(Builder $query): Builder
     {
-        // Return profiles that are marked as public.
         return $query->where('is_public', true);
     }
 
     /**
-     * Scope the query to published profiles.
-     *
-     * @param  Builder  $query  The query builder instance.
-     * @return Builder The modified query builder instance.
+     * @param  Builder<static>  $query
+     * @return Builder<static>
      */
     public function scopePublished(Builder $query): Builder
     {
-        // Return profiles that have a published date and the published date is in the past.
         return $query->whereNotNull('published_at')->where('published_at', '<=', now());
     }
 
     /**
-     * Scope the query to profiles that can be viewed publicly.
-     *
-     * @param  Builder  $query  The query builder instance.
-     * @return Builder The modified query builder instance.
+     * @param  Builder<static>  $query
+     * @return Builder<static>
      */
     public function scopeVisible(Builder $query): Builder
     {
-        // Return profiles that are both public and published.
-        return $query->public()->published();
+        // Return only profiles that are public and have a published_at date that is in the past.
+        return $query->where('is_public', true)
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now());
     }
 
     /**
-     * Determine if the profile is publicly visible.
+     * Determine whether this Persona profile is visible to the public.
+     *
+     * @return bool Returns true if the profile is public and published, false otherwise.
      */
     public function isVisible(): bool
     {
-        // Check if the profile is public, has a published date, and that the published date is in the past.
+        // Check if the profile is public and has a published_at date that is in the past.
         return $this->is_public && $this->published_at !== null && $this->published_at->isPast();
     }
 
     /**
-     * Increment the profile view count.
+     * Increment the profile views count for this Persona profile.
      *
-     * @return bool Returns true if the increment was successful, false otherwise.
+     * @return bool Returns true if the increment operation was successful, false otherwise.
      */
     public function recordView(): bool
     {
-        // Increment the profile_views attribute by 1 and save the model.
-        return $this->increment('profile_views');
+        // Increment the profile_views attribute by 1 and return true if the operation was successful.
+        return $this->increment('profile_views') > 0;
     }
 
     /**
-     * Get the avatar URL.
+     * Generate the public URL for the avatar image of this Persona profile.
      *
      * @param  string|null  $disk  The storage disk to use for generating the URL. If null, the default disk from configuration will be used.
-     * @return string|null The URL of the avatar image, or null if no avatar path is set.
+     * @return string|null Returns the URL for the avatar image or null if no avatar is set.
      */
     public function avatarUrl(?string $disk = null): ?string
     {
-        // If there is no avatar path, return null
+        // Check if the avatar_path is set; if not, return null.
         if (! $this->avatar_path) {
             return null;
         }
 
-        // Use the specified disk or fallback to the default disk from configuration
+        // Generate the URL for the avatar image using the specified disk or the default disk from configuration.
         return Storage::disk($disk ?? config('persona.storage.disk', 'public'))->url($this->avatar_path);
     }
 
     /**
-     * Get the banner URL.
+     * Generate the public URL for the banner image of this Persona profile.
      *
      * @param  string|null  $disk  The storage disk to use for generating the URL. If null, the default disk from configuration will be used.
-     * @return string|null The URL of the banner image, or null if no banner path is set.
+     * @return string|null Returns the URL for the banner image or null if no banner is set.
      */
     public function bannerUrl(?string $disk = null): ?string
     {
-        // If there is no banner path, return null
+        // Check if the banner_path is set; if not, return null.
         if (! $this->banner_path) {
             return null;
         }
 
-        // Use the specified disk or fallback to the default disk from configuration
+        // Generate the URL for the banner image using the specified disk or the default disk from configuration.
         return Storage::disk($disk ?? config('persona.storage.disk', 'public'))->url($this->banner_path);
     }
 
     /**
-     * Get the URL for the profile page.
+     * Generate the public URL for this Persona profile.
      *
-     * @return string The URL of the profile page.
+     * @return string Returns the URL for the public profile page.
      */
     public function url(): string
     {
+        // Generate the URL for the public profile page using the configured route name and the current Persona instance.
         return route(config('persona.routes.show_name', 'persona.show'), $this);
     }
 }

@@ -57,7 +57,10 @@ class PersonaController extends Controller
             throw new LogicException('Unable to resolve the configured Persona model.');
         }
 
+        /** @var class-string<Persona> $personaModel */
+        $personaModel = $personaModel;
+
         // Query the Persona model for a visible profile matching the provided slug, throwing a 404 error if not found.
-        return $personaModel::query()->visible()->where('slug', $slug)->firstOrFail();
+        return $personaModel::visible()->where('slug', $slug)->firstOrFail();
     }
 }
