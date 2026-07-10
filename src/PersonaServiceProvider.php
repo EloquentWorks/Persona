@@ -75,53 +75,53 @@ class PersonaServiceProvider extends ServiceProvider
      */
     protected function registerRoutesMacro(): void
     {
-        /** @var Router $router */
-        $router = $this->app['router'];
-
-        // Check if the Route::persona() macro is already defined to avoid redefinition.
+        // Check if the Route::persona() macro is already registered to avoid duplicate registration.
         if (Router::hasMacro('persona')) {
             return;
         }
-
-        // Define the Route::persona() macro to register public profile routes with optional configuration.
-        $router->macro('persona', function (array $options = []) use ($router): void {
-            // Retrieve the Persona route configuration from the application's config, defaulting to an empty array if not set.
+    
+        // Define the Route::persona() macro to register public profile routes with customizable options.
+        Router::macro('persona', function (array $options = []): void {
+            /** @var Router $router */
+            $router = $this;
+    
+            // Retrieve the default route configuration from the Persona package's configuration file.
             $config = config('persona.routes', []);
             $config = is_array($config) ? $config : [];
-
-            // Merge the provided options with the configuration values, falling back to defaults if necessary.
+    
+            // Merge the provided options with the default configuration, allowing for customization of middleware, prefix, path, name, and controller.
             $middleware = $options['middleware'] ?? $config['middleware'] ?? ['web'];
             $prefix = $options['prefix'] ?? $config['prefix'] ?? '';
             $path = $options['path'] ?? $config['path'] ?? '@{persona}';
             $name = $options['name'] ?? $config['name'] ?? 'persona.';
             $controller = $options['controller'] ?? $config['controller'] ?? PersonaController::class;
-
-            // Ensure the middleware is either an array or a string; if not, default to ['web'].
+    
+            // Ensure that the middleware is either an array or a string; if not, default to the 'web' middleware.
             if (! is_array($middleware) && ! is_string($middleware)) {
                 $middleware = ['web'];
             }
-
-            // Ensure the controller is a valid class name; if not, default to PersonaController.
-            if (! is_string($controller)) {
+    
+            // Ensure that the controller is a valid class; if not, default to the PersonaController.
+            if (! is_string($controller) || ! class_exists($controller)) {
                 $controller = PersonaController::class;
             }
-
-            // Trim the prefix and path to remove any leading or trailing slashes, and construct the full URI for the route.
+    
+            // Trim leading and trailing slashes from the prefix and path, and concatenate them to form the full URI for the route.
             $prefix = trim((string) $prefix, '/');
             $path = trim((string) $path, '/');
             $uri = trim($prefix.'/'.$path, '/');
-
-            // Determine the route name for the 'show' action, ensuring it ends with '.show'.
+    
+            // Determine the route name for the public profile route, ensuring it ends with '.show' for consistency.
             $routeName = str_ends_with((string) $name, '.show')
                 ? (string) $name
                 : Str::finish((string) $name, '.').'show';
-
-            // Register the GET route for the public profile page, associating it with the specified controller and middleware.
+    
+            // Register the GET route for the public profile, associating it with the specified controller and middleware, and assigning the determined route name.
             $router->get($uri, [$controller, 'show'])
                 ->middleware($middleware)
                 ->name($routeName);
-
-            // Refresh the route name and action lookups to ensure the new route is recognized.
+    
+            // Refresh the route name and action lookups to ensure that the newly registered route is recognized by the router.
             $router->getRoutes()->refreshNameLookups();
             $router->getRoutes()->refreshActionLookups();
         });
