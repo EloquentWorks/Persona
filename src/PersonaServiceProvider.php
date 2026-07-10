@@ -37,7 +37,6 @@ class PersonaServiceProvider extends ServiceProvider
         // Load the Persona views from the package's resources/views directory for use in the application.
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'persona');
 
-
         // If we are not running in the console, skip the following console-specific bootstrapping.
         if (! $this->app->runningInConsole()) {
             return;
