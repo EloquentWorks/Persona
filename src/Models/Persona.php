@@ -296,7 +296,7 @@ class Persona extends Model
      * @param  bool  $spendToken  Whether to spend a token for the change (default: true).
      * @return bool Returns true when the username was successfully changed.
      *
-     * @throws \LogicException If the profile does not have enough username tokens to make the change.
+     * @throws LogicException If the profile does not have enough username tokens to make the change.
      */
     public function changeUsername(string $username, bool $spendToken = true): bool
     {
@@ -424,7 +424,7 @@ class Persona extends Model
      *
      * @param  string  $username  The username to validate.
      *
-     * @throws \InvalidArgumentException If the username does not meet the requirements.
+     * @throws InvalidArgumentException If the username does not meet the requirements.
      */
     protected function validateUsername(string $username): void
     {
