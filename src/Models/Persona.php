@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
+use LogicException;
 
 /**
  * This model is used to manage user profiles, including their display name, bio, social links, and other related information.
@@ -27,6 +29,9 @@ use Illuminate\Support\Str;
  * @property array<string, mixed>|null $metadata
  * @property bool $is_public
  * @property int $profile_views
+ * @property int $username_tokens
+ * @property Carbon|null $username_tokens_granted_at
+ * @property Carbon|null $username_changed_at
  * @property Carbon|null $published_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -39,10 +44,23 @@ class Persona extends Model
 {
     /** @var list<string> The attributes that are mass assignable. */
     protected $fillable = [
-        'user_id', 'slug', 'display_name', 'headline', 'bio', 'location',
-        'website_url', 'avatar_path', 'banner_path', 'social_links',
-        'custom_links', 'metadata', 'is_public', 'username_tokens',
-        'username_tokens_granted_at', 'username_changed_at', 'profile_views',
+        'user_id',
+        'slug',
+        'display_name',
+        'headline',
+        'bio',
+        'location',
+        'website_url',
+        'avatar_path',
+        'banner_path',
+        'social_links',
+        'custom_links',
+        'metadata',
+        'is_public',
+        'profile_views',
+        'username_tokens',
+        'username_tokens_granted_at',
+        'username_changed_at',
         'published_at',
     ];
 
@@ -52,10 +70,10 @@ class Persona extends Model
         'custom_links' => 'array',
         'metadata' => 'array',
         'is_public' => 'boolean',
+        'profile_views' => 'integer',
         'username_tokens' => 'integer',
         'username_tokens_granted_at' => 'datetime',
         'username_changed_at' => 'datetime',
-        'profile_views' => 'integer',
         'published_at' => 'datetime',
     ];
 
