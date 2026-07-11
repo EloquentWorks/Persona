@@ -47,11 +47,16 @@ trait HasPersona
             $attributes['slug'] = app(SlugGenerator::class)->forModel($this, $attributes);
         }
 
-        // Set the is_public attribute based on the provided attributes or the default configuration.
+        // Set default values for is_public, username_tokens, and username_tokens_granted_at if not provided.
         $attributes['is_public'] = $attributes['is_public'] ?? config('persona.visibility.default_public', true);
+        $attributes['username_tokens'] = $attributes['username_tokens'] ?? config('persona.usernames.initial_tokens', 0);
+        $attributes['username_tokens_granted_at'] = $attributes['username_tokens_granted_at'] ?? now();
 
-        // Create and return the Persona profile associated with this model.
-        return $this->persona()->create($attributes);
+        /** @var Persona $persona */
+        $persona = $this->persona()->create($attributes);
+
+        // Return the newly created Persona profile.
+        return $persona;
     }
 
     /**
@@ -90,6 +95,55 @@ trait HasPersona
 
         // Return the URL of the profile if it exists, otherwise return null.
         return $profile?->url();
+    }
+
+    /**
+     * Change the Persona username for this model.
+     *
+     * @param  string  $username  The new username to set.
+     * @param  bool  $spendToken  Whether to spend a token for the change (default: true).
+     * @return bool Returns true when the username was successfully changed.
+     */
+    public function changePersonaUsername(string $username, bool $spendToken = true): bool
+    {
+        // Retrieve the Persona profile for this model.
+        $profile = $this->persona()->first();
+
+        // If no profile exists, return false to indicate the username change cannot be performed.
+        if (! $profile) {
+            return false;
+        }
+
+        // Delegate the username change to the Persona profile's changeUsername method.
+        return $profile->changeUsername($username, $spendToken);
+    }
+
+    /**
+     * Determine whether this model can change its Persona username.
+     *
+     * @return bool Returns true when the username can be changed.
+     */
+    public function canChangePersonaUsername(): bool
+    {
+        // Retrieve the Persona profile for this model.
+        $profile = $this->persona()->first();
+
+        // Return whether the profile allows username changes, or false if no profile exists.
+        return $profile?->canChangeUsername() ?? false;
+    }
+
+    /**
+     * Get the current username token balance for this model's Persona profile.
+     *
+     * @return int Returns the number of username tokens available.
+     */
+    public function personaUsernameTokens(): int
+    {
+        // Retrieve the Persona profile for this model.
+        $profile = $this->persona()->first();
+
+        // Return the number of username tokens, or 0 if no profile exists.
+        return $profile?->usernameTokens() ?? 0;
     }
 
     /**

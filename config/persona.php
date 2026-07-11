@@ -66,6 +66,44 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Persona Usernames
+    |--------------------------------------------------------------------------
+    |
+    | Persona uses the profile slug as the public username. Username changes can
+    | be limited with tokens so users cannot rename themselves too often.
+    |
+    | By default, users can earn one username token every six months and can hold
+    | a maximum of two tokens. New profiles do not receive an initial token
+    | because their first username is free when the profile is created.
+    |
+    */
+
+    'usernames' => [
+        'enabled' => true,
+        'unique' => true,
+        'initial_tokens' => 0,
+        'token_cost' => 1,
+        'tokens_per_interval' => 1,
+        'token_interval_months' => 6,
+        'max_tokens' => 2,
+        'min_length' => 3,
+        'max_length' => 32,
+        'regex' => '/^[a-z0-9_][a-z0-9_-]*[a-z0-9_]$/',
+        'reserved' => [
+            'admin',
+            'api',
+            'dashboard',
+            'login',
+            'logout',
+            'register',
+            'settings',
+            'support',
+            'users',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Persona Views
     |--------------------------------------------------------------------------
     |

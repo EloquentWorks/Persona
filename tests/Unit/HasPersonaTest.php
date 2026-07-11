@@ -35,4 +35,20 @@ class HasPersonaTest extends TestCase
 
         $this->assertSame('Laravel Developer', $profile->headline);
     }
+
+    #[Test]
+    public function it_can_change_a_persona_username_from_the_user_model(): void
+    {
+        $user = createUser(['name' => 'Nick']);
+
+        $user->createPersona([
+            'slug' => 'nick',
+            'username_tokens' => 1,
+        ]);
+
+        $this->assertTrue($user->canChangePersonaUsername());
+        $this->assertTrue($user->changePersonaUsername('signal-nick'));
+        $this->assertSame('signal-nick', $user->persona()->first()?->slug);
+        $this->assertSame(0, $user->personaUsernameTokens());
+    }
 }

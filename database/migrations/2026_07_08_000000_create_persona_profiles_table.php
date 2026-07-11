@@ -53,6 +53,15 @@ return new class extends Migration
             // Status of the profile, indicating whether it is active, inactive, or in another state.
             $table->boolean('is_public')->default(true);
 
+            // The number of username change tokens currently available to this profile.
+            $table->unsignedInteger('username_tokens')->default(0);
+
+            // The last time username change tokens were granted to this profile.
+            $table->timestamp('username_tokens_granted_at')->nullable();
+
+            // The last time this profile changed its public username / slug.
+            $table->timestamp('username_changed_at')->nullable();
+
             // Optional status field for the profile, allowing for more granular control over the profile's state.
             $table->unsignedBigInteger('profile_views')->default(0);
 
@@ -67,6 +76,7 @@ return new class extends Migration
 
             // Indexes for optimizing queries on the user_id and is_public columns, improving performance for common queries.
             $table->index(['user_id', 'is_public']);
+            $table->index('username_tokens_granted_at');
         });
     }
 
