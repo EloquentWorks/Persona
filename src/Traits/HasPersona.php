@@ -3,6 +3,7 @@
 namespace EloquentWorks\Persona\Traits;
 
 use EloquentWorks\Persona\Models\Persona;
+use EloquentWorks\Persona\Models\PersonaComment;
 use EloquentWorks\Persona\Support\SlugGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -168,5 +169,18 @@ trait HasPersona
 
         // Fallback to a default slug when no other source is available.
         return 'persona';
+    }
+
+    /**
+     * Add a comment to a Persona profile.
+     *
+     * @param  Persona  $persona  The Persona profile to comment on.
+     * @param  string  $body  The content of the comment.
+     * @return PersonaComment Returns the created PersonaComment instance.
+     */
+    public function commentOnPersona(Persona $persona, string $body): PersonaComment
+    {
+        // Delegate the comment creation to the Persona profile's addComment method.
+        return $persona->addComment($this, $body);
     }
 }

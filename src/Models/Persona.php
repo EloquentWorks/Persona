@@ -3,8 +3,10 @@
 namespace EloquentWorks\Persona\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -27,6 +29,7 @@ use LogicException;
  * @property array<string, mixed>|null $social_links
  * @property array<string, mixed>|null $custom_links
  * @property array<string, mixed>|null $metadata
+ * @property-read Collection<int, PersonaComment> $comments
  * @property bool $is_public
  * @property int $profile_views
  * @property int $username_tokens
@@ -109,6 +112,23 @@ class Persona extends Model
 
         // Validate that the resolved user model is a string and is a subclass of the Eloquent Model class.
         return $this->belongsTo($userModel, 'user_id');
+    }
+
+    /**
+     * Get the comments for this profile.
+     *
+     * @return HasMany<PersonaComment, $this>
+     */
+    public function comments(): HasMany
+    {
+        /** @var class-string<PersonaComment> $commentModel */
+        $commentModel = config('persona.models.comment', PersonaComment::class);
+
+        /** @var HasMany<PersonaComment, $this> $relationship */
+        $relationship = $this->hasMany($commentModel, 'persona_id');
+
+        // Return the relationship to the PersonaComment model, allowing for retrieval of comments associated with this profile.
+        return $relationship;
     }
 
     /**
@@ -454,5 +474,76 @@ class Persona extends Model
         if (! $this->usernameIsAvailable($username)) {
             throw new InvalidArgumentException('This username is already taken.');
         }
+    }
+
+    /**
+     * Get approved comments for this profile.
+     *
+     * @return HasMany<PersonaComment, $this>
+     */
+    public function approvedComments(): HasMany
+    {
+        /** @var HasMany<PersonaComment, $this> $relationship */
+        $relationship = $this->comments()->approved();
+
+        // Return the relationship to the PersonaComment model, filtered to only include comments that are approved.
+        return $relationship;
+    }
+
+    /**
+     * Get pinned comments for this profile.
+     *
+     * @return HasMany<PersonaComment, $this>
+     */
+    public function pinnedComments(): HasMany
+    {
+        /** @var HasMany<PersonaComment, $this> $relationship */
+        $relationship = $this->comments()->pinned();
+
+        // Return the relationship to the PersonaComment model, filtered to only include comments that are pinned.
+        return $relationship;
+    }
+
+    /**
+     * Add a comment to this Persona profile.
+     *
+     * @param  Model  $user  The user model instance representing the commenter.
+     * @param  string  $body  The body of the comment.
+     * @return PersonaComment Returns the newly created comment instance.
+     *
+     * @throws InvalidArgumentException If comments are disabled, the comment body is empty, or exceeds the maximum length.
+     */
+    public function addComment(Model $user, string $body): PersonaComment
+    {
+        // Check if comments are enabled in the configuration; if not, throw an exception.
+        if (! config('persona.comments.enabled', true)) {
+            throw new InvalidArgumentException('Persona comments are disabled.');
+        }
+
+        // Trim the comment body to remove leading and trailing whitespace.
+        $body = trim($body);
+
+        // Check if the comment body is empty after trimming; if so, throw an exception.
+        if ($body === '') {
+            throw new InvalidArgumentException('Comment body cannot be empty.');
+        }
+
+        // Retrieve the maximum allowed length for comments from the configuration, defaulting to 1000 characters if not set.
+        $maxLength = (int) config('persona.comments.max_length', 1000);
+
+        // Check if the comment body exceeds the maximum allowed length; if so, throw an exception.
+        if (mb_strlen($body) > $maxLength) {
+            throw new InvalidArgumentException("Comment body may not be greater than {$maxLength} characters.");
+        }
+
+        /** @var class-string<PersonaComment> $commentModel */
+        $commentModel = config('persona.models.comment', PersonaComment::class);
+
+        // Create a new comment associated with this Persona profile, setting the user ID, comment body, and approval status based on configuration.
+        return $this->comments()->create([
+            'user_id' => $user->getKey(),
+            'body' => $body,
+            'is_approved' => ! config('persona.comments.require_approval', false),
+        ]);
     }
 }

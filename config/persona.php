@@ -2,6 +2,7 @@
 
 use EloquentWorks\Persona\Http\Controllers\PersonaController;
 use EloquentWorks\Persona\Models\Persona;
+use EloquentWorks\Persona\Models\PersonaComment;
 
 return [
 
@@ -19,6 +20,7 @@ return [
 
     'tables' => [
         'profiles' => 'persona_profiles',
+        'comments' => 'persona_comments',
         'users' => 'users',
     ],
 
@@ -37,6 +39,7 @@ return [
 
     'models' => [
         'persona' => Persona::class,
+        'comment' => PersonaComment::class,
         'user' => null,
     ],
 
@@ -184,6 +187,23 @@ return [
         'bio_max' => 1000,
         'location_max' => 120,
         'website_url_max' => 255,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Persona Comments
+    |--------------------------------------------------------------------------
+    |
+    | These settings control the behavior of public comments on profiles.
+    |
+    */
+
+    'comments' => [
+        'enabled' => true,
+        'require_approval' => false,
+        'allow_guest_comments' => false,
+        'max_length' => 1000,
+        'soft_deletes' => true,
     ],
 
     /*
