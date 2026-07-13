@@ -1,7 +1,4 @@
 [![Tests](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml/badge.svg)](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml)
-![Latest Version on Packagist](https://img.shields.io/packagist/v/eloquent-works/persona)
-![Laravel Version](https://img.shields.io/badge/Laravel-11%20%7C%2012%20%7C%2013-FF2D20?logo=laravel)
-![Total Downloads](https://img.shields.io/packagist/dt/eloquent-works/persona)
 
 # Persona
 
