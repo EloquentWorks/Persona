@@ -1,6 +1,6 @@
 {
     "name": "eloquent-works/persona",
-    "description": "EloquentWorks Persona gives your users elegant public profiles with slugs, bios, avatars, links, visibility, and profile pages.",
+    "description": "Laravel Persona gives your users elegant public profiles with slugs, bios, avatars, links, visibility, and profile pages.",
     "type": "library",
     "license": "MIT",
     "keywords": [
