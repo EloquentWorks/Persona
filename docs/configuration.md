@@ -30,21 +30,20 @@ The published file is located at `config/persona.php`.
 
 When `user` is `null`, Persona uses the user model configured by Laravel's authentication provider.
 
-## Routes
+## Visibility
 
 ```php
-'routes' => [
-    'prefix' => '',
-    'path' => '@{persona}',
-    'middleware' => ['web'],
-    'name' => 'persona.',
-    'show_name' => 'persona.show',
-    'controller' => EloquentWorks\Persona\Http\Controllers\PersonaController::class,
-    'parameter' => 'persona',
+'visibility' => [
+    'default_public' => true,
+    'require_published_at' => false,
 ],
 ```
 
-See [Routes](routes.md) for route registration and customization.
+When `require_published_at` is `false`, a profile is visible when `is_public` is `true`.
+
+When `require_published_at` is `true`, a profile must also have a `published_at` value that is not in the future.
+
+Both `Persona::visible()` and `$persona->isVisible()` honor this option.
 
 ## Usernames and tokens
 
@@ -76,7 +75,7 @@ Persona uses the profile `slug` as its public username.
 ],
 ```
 
-With the defaults, a profile earns one username token every six months, holds at most two tokens, and spends one token per username change. The initial username created with the profile is free.
+With these defaults, a profile earns one username token every six months, holds at most two tokens, and spends one token per username change.
 
 ## Comments
 
@@ -87,80 +86,58 @@ With the defaults, a profile earns one username token every six months, holds at
     'allow_guest_comments' => false,
     'max_length' => 1000,
     'replies_enabled' => true,
-    'max_depth' => 1,
-    'soft_deletes' => true,
 ],
 ```
 
-Persona supports top-level profile comments and one reply level. See [Comments](comments.md).
+Persona provides model-level comment behavior. Applications are still responsible for routes, request validation, authorization, rate limiting, spam protection, and guest handling.
 
-> `allow_guest_comments`, `max_depth`, and `soft_deletes` describe package behavior and extension points. Guest posting still requires application-level routing, authentication, and validation.
+`allow_guest_comments` is intended for consuming applications and user interfaces. Persona does not automatically create or authenticate guest commenters.
 
-## Views
+Persona supports top-level comments and one reply level. Comment records use soft deletes.
 
-```php
-'views' => [
-    'show' => 'persona::show',
-    'layout' => null,
-],
-```
-
-Publish views with:
-
-```bash
-php artisan vendor:publish --tag=persona-views
-```
-
-## Storage
-
-```php
-'storage' => [
-    'disk' => 'public',
-    'avatar_directory' => 'personas/avatars',
-    'banner_directory' => 'personas/banners',
-],
-```
-
-## Slugs
-
-```php
-'slugs' => [
-    'source' => 'name',
-    'separator' => '-',
-    'max_length' => 64,
-    'reserved' => [
-        'admin',
-        'api',
-        'dashboard',
-        'login',
-        'logout',
-        'register',
-        'settings',
-        'support',
-        'users',
-    ],
-],
-```
-
-## Field limits
+## Profile field limits
 
 ```php
 'fields' => [
     'display_name_max' => 80,
     'headline_max' => 120,
+    'motto_max' => 160,
     'bio_max' => 1000,
     'location_max' => 120,
     'website_url_max' => 255,
 ],
 ```
 
-## Visibility
+These values are intended for application form requests and interfaces. Persona does not automatically validate arbitrary model assignments.
+
+Example form request rules:
 
 ```php
-'visibility' => [
-    'default_public' => true,
-    'require_published_at' => false,
-],
+public function rules(): array
+{
+    return [
+        'display_name' => [
+            'nullable',
+            'string',
+            'max:'.config('persona.fields.display_name_max', 80),
+        ],
+        'headline' => [
+            'nullable',
+            'string',
+            'max:'.config('persona.fields.headline_max', 120),
+        ],
+        'motto' => [
+            'nullable',
+            'string',
+            'max:'.config('persona.fields.motto_max', 160),
+        ],
+        'bio' => [
+            'nullable',
+            'string',
+            'max:'.config('persona.fields.bio_max', 1000),
+        ],
+    ];
+}
 ```
 
 ## Links
@@ -184,6 +161,78 @@ php artisan vendor:publish --tag=persona-views
 ],
 ```
 
+These limits are intended for application validation and user interfaces. Assigning arrays directly to the model does not automatically enforce them.
+
+Example validation:
+
+```php
+use Illuminate\Validation\Rule;
+
+public function rules(): array
+{
+    return [
+        'social_links' => [
+            'nullable',
+            'array',
+            'max:'.config('persona.links.max_social_links', 10),
+        ],
+        'social_links.*.platform' => [
+            'required',
+            'string',
+            Rule::in(config('persona.links.allowed_social_platforms', [])),
+        ],
+        'social_links.*.url' => [
+            'required',
+            'url',
+        ],
+        'custom_links' => [
+            'nullable',
+            'array',
+            'max:'.config('persona.links.max_custom_links', 10),
+        ],
+    ];
+}
+```
+
+## Storage
+
+```php
+'storage' => [
+    'disk' => 'public',
+    'avatar_directory' => 'personas/avatars',
+    'banner_directory' => 'personas/banners',
+],
+```
+
+## Routes
+
+```php
+'routes' => [
+    'prefix' => '',
+    'path' => '@{persona}',
+    'middleware' => ['web'],
+    'name' => 'persona.',
+    'show_name' => 'persona.show',
+    'controller' => EloquentWorks\Persona\Http\Controllers\PersonaController::class,
+    'parameter' => 'persona',
+],
+```
+
+## Views
+
+```php
+'views' => [
+    'show' => 'persona::show',
+    'layout' => null,
+],
+```
+
+Publish views with:
+
+```bash
+php artisan vendor:publish --tag=persona-views
+```
+
 ## Feature flags
 
 ```php
@@ -196,11 +245,3 @@ php artisan vendor:publish --tag=persona-views
     'banners' => true,
 ],
 ```
-
-## Events
-
-```php
-'dispatch_events' => true,
-```
-
-When enabled, Persona may dispatch its profile lifecycle and view events.
