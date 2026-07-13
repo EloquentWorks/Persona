@@ -1,10 +1,10 @@
 [![Tests](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml/badge.svg)](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml)
 
-# Persona
+# Laravel Persona
 
 Elegant public profile tools for Laravel applications.
 
-Persona gives your Eloquent user model a clean way to manage public profiles, unique usernames, username change tokens, display names, bios, avatars, banners, social links, custom links, visibility, publishing, and profile view tracking.
+Laravel Persona gives your Eloquent user model a clean way to manage public profiles, unique usernames, username change tokens, display names, bios, avatars, banners, social links, custom links, visibility, publishing, and profile view tracking.
 
 ```php
 $profile = $user->persona;
@@ -100,7 +100,7 @@ $profile->url();
 
 ## Username tokens
 
-Persona can limit username changes with tokens. By default, a profile earns one token every six months and can hold up to two tokens.
+Laravel Persona can limit username changes with tokens. By default, a profile earns one token every six months and can hold up to two tokens.
 
 ```php
 $profile->usernameTokens();
