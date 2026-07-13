@@ -27,7 +27,7 @@ $profile->avatarUrl();
 Install the package through Composer:
 
 ```bash
-composer require eloquentworks/persona
+composer require eloquent-works/persona
 ```
 
 Publish the config and migrations:
