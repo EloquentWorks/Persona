@@ -1,6 +1,6 @@
 # Customization
 
-Persona can be customized through its configuration, models, views, routes, and application-level validation.
+Persona can be customized through configuration, replacement models, views, routes, and application-level validation.
 
 ## Publish configuration
 
@@ -20,18 +20,7 @@ Published views are placed in:
 resources/views/vendor/persona
 ```
 
-You may also change the view used by the package controller:
-
-```php
-'views' => [
-    'show' => 'profiles.show',
-    'layout' => 'layouts.app',
-],
-```
-
 ## Custom Persona model
-
-Create a model that extends the package model:
 
 ```php
 <?php
@@ -46,7 +35,7 @@ class Persona extends BasePersona
 }
 ```
 
-Register it in `config/persona.php`:
+Register it:
 
 ```php
 'models' => [
@@ -77,31 +66,25 @@ Register it:
 ],
 ```
 
-## Custom user model
+## Validation responsibilities
 
-```php
-'models' => [
-    'user' => App\Models\User::class,
-],
-```
+Persona exposes configurable limits for profile fields, usernames, comments, and links. The consuming application should use those values in form requests.
 
-When left as `null`, Persona uses Laravel's configured authentication user model.
+Persona does not automatically enforce:
 
-## Custom tables
+- profile field limits on arbitrary model assignment
+- social or custom link limits
+- guest comment access
+- comment authorization
+- rate limiting or spam protection
 
-Change table names before running migrations:
+## Comment behavior
 
-```php
-'tables' => [
-    'profiles' => 'profiles',
-    'comments' => 'profile_comments',
-    'users' => 'users',
-],
-```
+Persona supports one reply level and uses soft deletes. These behaviors are part of the package's current model design rather than runtime configuration switches.
 
-If migrations have already run, create an application migration to rename or modify the existing tables.
+Applications may replace the comment model when deeper customization is required.
 
-## Custom public route
+## Custom route
 
 ```php
 Route::persona([
@@ -113,51 +96,10 @@ Route::persona([
 ]);
 ```
 
-Update the configured route name when using a custom name:
+When changing the route name, update:
 
 ```php
 'routes' => [
     'show_name' => 'members.show',
 ],
 ```
-
-## Custom slug source
-
-Use a model attribute:
-
-```php
-'slugs' => [
-    'source' => 'name',
-],
-```
-
-A model using `HasPersona` may also customize the fallback value used during slug generation:
-
-```php
-public function personaSlugSource(): string
-{
-    return (string) $this->username;
-}
-```
-
-## Validation
-
-Persona exposes configurable field, username, comment, and link limits. Applications should use those values in form requests and UI validation:
-
-```php
-'display_name' => [
-    'nullable',
-    'string',
-    'max:'.config('persona.fields.display_name_max', 80),
-],
-```
-
-## Events
-
-Set:
-
-```php
-'dispatch_events' => true,
-```
-
-to allow Persona's profile lifecycle and view events to be dispatched. Register listeners in the consuming Laravel application as usual.
