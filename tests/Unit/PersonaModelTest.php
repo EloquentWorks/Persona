@@ -17,6 +17,56 @@ class PersonaModelTest extends TestCase
     }
 
     #[Test]
+    public function visible_profiles_do_not_require_published_at_by_default(): void
+    {
+        config()->set('persona.visibility.require_published_at', false);
+
+        $user = createUser();
+
+        $persona = $user->createPersona([
+            'slug' => 'nick',
+            'is_public' => true,
+            'published_at' => null,
+        ]);
+
+        $this->assertTrue(
+            Persona::visible()->whereKey($persona->getKey())->exists()
+        );
+
+        $this->assertTrue($persona->isVisible());
+    }
+
+    #[Test]
+    public function visible_profiles_can_require_published_at(): void
+    {
+        config()->set('persona.visibility.require_published_at', true);
+
+        $user = createUser();
+
+        $persona = $user->createPersona([
+            'slug' => 'nick',
+            'is_public' => true,
+            'published_at' => null,
+        ]);
+
+        $this->assertFalse(
+            Persona::visible()->whereKey($persona->getKey())->exists()
+        );
+
+        $this->assertFalse($persona->isVisible());
+
+        $persona->update([
+            'published_at' => now()->subMinute(),
+        ]);
+
+        $this->assertTrue(
+            Persona::visible()->whereKey($persona->getKey())->exists()
+        );
+
+        $this->assertTrue($persona->refresh()->isVisible());
+    }
+
+    #[Test]
     public function it_casts_json_boolean_integer_and_date_columns(): void
     {
         $persona = new Persona;

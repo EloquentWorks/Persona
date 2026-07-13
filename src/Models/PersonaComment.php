@@ -359,14 +359,39 @@ class PersonaComment extends Model
     }
 
     /**
-     * Edit the comment.
+     * Edit the comment body.
      *
      * @param  string  $body  The new body of the comment.
      * @return bool Returns true if the comment was successfully edited and saved, false otherwise.
+     *
+     * @throws InvalidArgumentException
      */
     public function edit(string $body): bool
     {
-        // Edit the comment by updating the 'body' and 'edited_at' fields and saving the model.
+        // Trim whitespace from the comment body to ensure accurate validation.
+        $body = trim($body);
+
+        // Validate that the comment body is not empty.
+        if ($body === '') {
+            throw new InvalidArgumentException(
+                'Comment body cannot be empty.'
+            );
+        }
+
+        // Validate that the comment body does not exceed the maximum allowed length as defined in the configuration.
+        $maxLength = (int) config(
+            'persona.comments.max_length',
+            1000
+        );
+
+        //  Validate that the comment body does not exceed the maximum allowed length as defined in the configuration.
+        if (mb_strlen($body) > $maxLength) {
+            throw new InvalidArgumentException(
+                "Comment body may not be greater than {$maxLength} characters."
+            );
+        }
+
+        // Update the comment body and set the edited_at timestamp to the current time, then save the model.
         return $this->forceFill([
             'body' => $body,
             'edited_at' => now(),

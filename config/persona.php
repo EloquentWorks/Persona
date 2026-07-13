@@ -184,6 +184,7 @@ return [
     'fields' => [
         'display_name_max' => 80,
         'headline_max' => 120,
+        'motto_max' => 120,
         'bio_max' => 1000,
         'location_max' => 120,
         'website_url_max' => 255,
@@ -194,18 +195,55 @@ return [
     | Persona Comments
     |--------------------------------------------------------------------------
     |
-    | These settings control the behavior of public comments on profiles.
+    | These settings control limits for public profile comments.
+    |
+    | Validation rules and form requests may reference these values so users can
+    | adjust comment limits without modifying the package source code.
     |
     */
 
     'comments' => [
+
+        /*
+        |--------------------------------------------------------------------------
+        | Profile Comments
+        |--------------------------------------------------------------------------
+        |
+        | These options configure Persona's model-level comment behavior.
+        | Applications are still responsible for routes, request validation,
+        | authorization, rate limiting, spam prevention, and guest handling.
+        |
+        */
+
         'enabled' => true,
+
+        /*
+        | When enabled, newly created comments and replies are not approved
+        | automatically.
+        */
+
         'require_approval' => false,
+
+        /*
+        | This value is provided for consuming applications to decide whether
+        | guest comment forms should be available. Persona does not create or
+        | authenticate guest authors automatically.
+        */
+
         'allow_guest_comments' => false,
+
+        /*
+        | Maximum body length enforced by addComment(), addReply(), and edit().
+        */
+
         'max_length' => 1000,
+
+        /*
+        | Controls whether addReply() may be used.
+        */
+
         'replies_enabled' => true,
-        'max_depth' => 1,
-        'soft_deletes' => true,
+
     ],
 
     /*

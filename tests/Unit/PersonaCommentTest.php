@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use EloquentWorks\Persona\Models\PersonaComment;
+use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -226,6 +227,74 @@ class PersonaCommentTest extends TestCase
         $this->assertDatabaseMissing('persona_comments', [
             'id' => $reply->getKey(),
         ]);
+    }
+
+    #[Test]
+    public function it_trims_the_body_when_editing_a_comment(): void
+    {
+        $owner = createUser();
+        $commenter = createUser();
+
+        $persona = $owner->createPersona([
+            'slug' => 'owner',
+        ]);
+
+        $comment = $persona->addComment(
+            $commenter,
+            'Original comment.'
+        );
+
+        $comment->edit('  Updated comment.  ');
+
+        $comment->refresh();
+
+        $this->assertSame('Updated comment.', $comment->body);
+        $this->assertNotNull($comment->edited_at);
+    }
+
+    #[Test]
+    public function a_comment_cannot_be_edited_to_an_empty_body(): void
+    {
+        $owner = createUser();
+        $commenter = createUser();
+
+        $persona = $owner->createPersona([
+            'slug' => 'owner',
+        ]);
+
+        $comment = $persona->addComment(
+            $commenter,
+            'Original comment.'
+        );
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Comment body cannot be empty.'
+        );
+
+        $comment->edit('   ');
+    }
+
+    #[Test]
+    public function a_comment_edit_cannot_exceed_the_maximum_length(): void
+    {
+        config()->set('persona.comments.max_length', 10);
+
+        $owner = createUser();
+        $commenter = createUser();
+
+        $persona = $owner->createPersona([
+            'slug' => 'owner',
+        ]);
+
+        $comment = $persona->addComment(
+            $commenter,
+            'Original.'
+        );
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $comment->edit('This comment is too long.');
     }
 
     #[Test]

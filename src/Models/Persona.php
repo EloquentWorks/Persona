@@ -152,15 +152,25 @@ class Persona extends Model
     }
 
     /**
+     * Scope a query to profiles that are visible.
+     *
      * @param  Builder<static>  $query
      * @return Builder<static>
      */
     public function scopeVisible(Builder $query): Builder
     {
-        // Return only profiles that are public and have a published_at date that is in the past.
-        return $query->where('is_public', true)
-            ->whereNotNull('published_at')
-            ->where('published_at', '<=', now());
+        // Return only profiles that are public and, if required by configuration, have a published_at date that is in the past.
+        $query->where('is_public', true);
+
+        // If the configuration requires profiles to have a published_at date, add a condition to the query to filter for profiles that are published.
+        if (config('persona.visibility.require_published_at', false)) {
+            $query
+                ->whereNotNull('published_at')
+                ->where('published_at', '<=', now());
+        }
+
+        // Return the modified query builder instance for further chaining or execution.
+        return $query;
     }
 
     /**
@@ -170,8 +180,19 @@ class Persona extends Model
      */
     public function isVisible(): bool
     {
-        // Check if the profile is public and has a published_at date that is in the past.
-        return $this->is_public && $this->published_at !== null && $this->published_at->isPast();
+        // Check if the profile is marked as public; if not, it is not visible.
+        if (! $this->is_public) {
+            return false;
+        }
+
+        // If the configuration does not require a published_at date for visibility, the profile is considered visible.
+        if (! config('persona.visibility.require_published_at', false)) {
+            return true;
+        }
+
+        // If the configuration requires a published_at date, check if the profile has a published_at date that is in the past.
+        return $this->published_at !== null
+            && $this->published_at->isPast();
     }
 
     /**
