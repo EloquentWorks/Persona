@@ -21,6 +21,7 @@ use LogicException;
  * @property string $slug
  * @property string|null $display_name
  * @property string|null $headline
+ * @property string|null $motto
  * @property string|null $bio
  * @property string|null $location
  * @property string|null $website_url
@@ -51,6 +52,7 @@ class Persona extends Model
         'slug',
         'display_name',
         'headline',
+        'motto',
         'bio',
         'location',
         'website_url',

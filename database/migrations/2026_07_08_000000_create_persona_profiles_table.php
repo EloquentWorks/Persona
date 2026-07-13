@@ -35,6 +35,9 @@ return new class extends Migration
             // Optional headline for the profile, providing a brief description or tagline.
             $table->string('headline')->nullable();
 
+            // Optional motto for the profile, allowing users to express a personal or professional statement.
+            $table->string('motto')->nullable();
+
             // Optional biography for the profile, allowing users to provide more detailed information about themselves.
             $table->text('bio')->nullable();
 
