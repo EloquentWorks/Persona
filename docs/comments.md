@@ -1,6 +1,6 @@
 # Profile Comments
 
-Persona supports comments on profiles with a maximum of two levels:
+Persona supports profile comments with two levels:
 
 ```text
 Top-level comment
@@ -8,6 +8,20 @@ Top-level comment
 ```
 
 Replies cannot receive additional replies.
+
+## Configuration
+
+```php
+'comments' => [
+    'enabled' => true,
+    'require_approval' => false,
+    'allow_guest_comments' => false,
+    'max_length' => 1000,
+    'replies_enabled' => true,
+],
+```
+
+Persona provides model-level comment behavior. Your application is responsible for authentication, authorization, request validation, rate limiting, spam protection, and any guest-comment workflow.
 
 ## Add a comment
 
@@ -27,7 +41,7 @@ $comment = $user->commentOnPersona(
 );
 ```
 
-Comments are approved automatically unless `persona.comments.require_approval` is enabled.
+Comments are approved automatically unless `require_approval` is enabled.
 
 ## Add a reply
 
@@ -54,9 +68,7 @@ $comment->parent;
 $comment->replies;
 ```
 
-## Profile comment queries
-
-Get approved top-level comments:
+## Query top-level comments
 
 ```php
 $comments = $profile
@@ -65,7 +77,7 @@ $comments = $profile
     ->get();
 ```
 
-Get pinned top-level comments:
+Pinned comments:
 
 ```php
 $pinned = $profile
@@ -74,7 +86,7 @@ $pinned = $profile
     ->get();
 ```
 
-Load approved comments and their approved replies:
+Load approved replies with each comment:
 
 ```php
 $comments = $profile
@@ -104,7 +116,7 @@ PersonaComment::topLevel()->get();
 PersonaComment::repliesOnly()->get();
 ```
 
-## Helpers
+## Comment helpers
 
 ```php
 $comment->isTopLevel();
@@ -128,7 +140,7 @@ $comment->pin();
 $comment->unpin();
 ```
 
-Pinning is intended primarily for top-level profile comments.
+Pinning is intended mainly for top-level profile comments.
 
 ## Editing
 
@@ -136,31 +148,29 @@ Pinning is intended primarily for top-level profile comments.
 $comment->edit('Updated comment body.');
 ```
 
-The `edited_at` timestamp is updated when `edit()` is called.
+`edit()` trims the body, rejects an empty value, enforces the configured maximum length, and updates `edited_at`.
 
 ## Deleting comment threads
 
-The model uses soft deletes. Deleting a top-level comment soft-deletes its direct replies:
+Persona comments use soft deletes.
+
+Soft-delete a parent comment and its replies:
 
 ```php
 $comment->delete();
 ```
 
-Force-deleting a top-level comment permanently removes its replies, including replies that were already soft-deleted:
+Permanently delete a parent comment and all replies, including previously soft-deleted replies:
 
 ```php
 $comment->forceDelete();
 ```
 
-## Validation and authorization
+## Authorization
 
-The model validates empty bodies and the configured maximum length. Your application should still enforce:
+Persona does not decide who may edit, delete, approve, pin, or reply to comments. The consuming application should enforce policies such as:
 
-- authentication
-- ownership and update/delete authorization
-- profile-owner moderation permissions
-- rate limiting
-- spam protection
-- request validation
-
-Persona provides the model API; it does not register comment-management web routes.
+- users may edit or delete their own comments
+- profile owners may moderate comments on their profiles
+- administrators may approve, pin, or remove comments
+- unauthenticated users may not post unless the application explicitly supports it
