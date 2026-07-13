@@ -18,7 +18,7 @@ $profile->avatarUrl();
 
 | Package Version | PHP | Laravel / Illuminate |
 | --- | --- | --- |
-| Current | `^8.2` | `^11.15 \|\| ^12.0 \|\| ^13.0` |
+| Current | `^8.2` | `^12.0 \|\| ^13.0` |
 
 > Composer will automatically resolve compatible Laravel / Illuminate versions based on your project.
 
