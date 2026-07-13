@@ -203,6 +203,8 @@ return [
         'require_approval' => false,
         'allow_guest_comments' => false,
         'max_length' => 1000,
+        'replies_enabled' => true,
+        'max_depth' => 1,
         'soft_deletes' => true,
     ],
 
@@ -238,7 +240,6 @@ return [
     'links' => [
         'max_social_links' => 10,
         'max_custom_links' => 10,
-
         'allowed_social_platforms' => [
             'github',
             'linkedin',

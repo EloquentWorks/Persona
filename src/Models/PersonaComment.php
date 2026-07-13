@@ -3,14 +3,19 @@
 namespace EloquentWorks\Persona\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use InvalidArgumentException;
+use LogicException;
 
 /**
  * @property int $id
  * @property int $persona_id
+ * @property int|null $parent_id
  * @property int $user_id
  * @property string $body
  * @property bool $is_approved
@@ -19,9 +24,13 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
+ * @property-read PersonaComment|null $parent
+ * @property-read Collection<int, PersonaComment> $replies
  *
  * @method static Builder<static> approved()
  * @method static Builder<static> pinned()
+ * @method static Builder<static> topLevel()
+ * @method static Builder<static> repliesOnly()
  */
 class PersonaComment extends Model
 {
@@ -30,6 +39,7 @@ class PersonaComment extends Model
     /** @var list<string> The attributes that are mass assignable. */
     protected $fillable = [
         'persona_id',
+        'parent_id',
         'user_id',
         'body',
         'is_approved',
@@ -87,6 +97,104 @@ class PersonaComment extends Model
     }
 
     /**
+     * Boot the model and define event listeners for deleting comments and their replies.
+     *
+     * @return void Returns nothing.
+     */
+    protected static function booted(): void
+    {
+        // When a comment is being deleted, this event listener will handle the deletion of its replies.
+        static::deleting(function (PersonaComment $comment): void {
+            if ($comment->isForceDeleting()) {
+                // If the comment is being force deleted, also force delete all its replies, including those that are soft deleted.
+                $comment->replies()
+                    ->withTrashed()
+                    ->get()
+                    ->each(
+                        fn (PersonaComment $reply): bool => $reply->forceDelete()
+                    );
+
+                return;
+            }
+
+            // If the comment is being soft deleted, also soft delete all its replies.
+            $comment->replies()
+                ->get()
+                ->each(
+                    fn (PersonaComment $reply): bool => $reply->delete()
+                );
+        });
+    }
+
+    /**
+     * Get the parent comment.
+     *
+     * @return BelongsTo<PersonaComment, $this>
+     */
+    public function parent(): BelongsTo
+    {
+        /** @var class-string<PersonaComment> $commentModel */
+        $commentModel = config(
+            'persona.models.comment',
+            PersonaComment::class
+        );
+
+        /** @var BelongsTo<PersonaComment, $this> $relationship */
+        $relationship = $this->belongsTo(
+            $commentModel,
+            'parent_id'
+        );
+
+        // Return the relationship to the parent comment, allowing access to the parent comment for this comment.
+        return $relationship;
+    }
+
+    /**
+     * Get the direct replies to this comment.
+     *
+     * @return HasMany<PersonaComment, $this>
+     */
+    public function replies(): HasMany
+    {
+        /** @var class-string<PersonaComment> $commentModel */
+        $commentModel = config(
+            'persona.models.comment',
+            PersonaComment::class
+        );
+
+        /** @var HasMany<PersonaComment, $this> $relationship */
+        $relationship = $this->hasMany(
+            $commentModel,
+            'parent_id'
+        );
+
+        // Return the relationship to the direct replies, allowing access to the replies for this comment.
+        return $relationship;
+    }
+
+    /**
+     * Scope a query to top-level comments.
+     *
+     * @param  Builder<static>  $query  The query Builder instance.
+     * @return Builder<static> Returns the modified query builder instance with the top-level scope applied.
+     */
+    public function scopeTopLevel(Builder $query): Builder
+    {
+        return $query->whereNull('parent_id');
+    }
+
+    /**
+     * Scope a query to replies.
+     *
+     * @param  Builder<static>  $query  The query builder instance.
+     * @return Builder<static> Returns the modified query builder instance with the replies scope applied.
+     */
+    public function scopeRepliesOnly(Builder $query): Builder
+    {
+        return $query->whereNotNull('parent_id');
+    }
+
+    /**
      * Scope a query to only include approved comments.
      *
      * @param  Builder<static>  $query  The query builder instance.
@@ -99,13 +207,103 @@ class PersonaComment extends Model
     }
 
     /**
-     * @param  Builder<static>  $query
-     * @return Builder<static>
+     * Scope a query to only include pinned comments.
+     *
+     * @param  Builder<static>  $query  The query builder instance.
+     * @return Builder<static> Returns the modified query builder instance with the pinned scope applied.
      */
     public function scopePinned(Builder $query): Builder
     {
         // Filter the query to only include comments where 'is_pinned' is true.
         return $query->where('is_pinned', true);
+    }
+
+    /**
+     * Determine whether this comment is a reply to another comment.
+     *
+     * @return bool Returns true if this comment is a reply, false otherwise.
+     */
+    public function isReply(): bool
+    {
+        // A comment is considered a reply if it has a parent comment (i.e., 'parent_id' is not null).
+        return $this->parent_id !== null;
+    }
+
+    /**
+     * Determine whether this is a top-level comment.
+     *
+     * @return bool Returns true if this comment is a top-level comment, false otherwise.
+     */
+    public function isTopLevel(): bool
+    {
+        // A top-level comment is defined as one that does not have a parent comment (i.e., 'parent_id' is null).
+        return $this->parent_id === null;
+    }
+
+    /**
+     * Add a direct reply to this comment.
+     *
+     * @param  Model  $user  The user model instance representing the author of the reply.
+     * @param  string  $body  The body of the reply.
+     * @return PersonaComment Returns the newly created reply comment instance.
+     *
+     * @throws InvalidArgumentException If the reply body is empty or exceeds the maximum length.
+     * @throws LogicException If comments or replies are disabled, or if this comment is already a reply.
+     */
+    public function addReply(Model $user, string $body): PersonaComment
+    {
+        // Validate that comments and replies are enabled in the configuration before proceeding.
+        if (! config('persona.comments.enabled', true)) {
+            throw new LogicException('Persona comments are disabled.');
+        }
+
+        // Validate that replies are enabled in the configuration before proceeding.
+        if (! config('persona.comments.replies_enabled', true)) {
+            throw new LogicException('Persona comment replies are disabled.');
+        }
+
+        // Validate that this comment is not already a reply, as nested replies are not allowed.
+        if ($this->isReply()) {
+            throw new LogicException(
+                'Replies cannot contain nested replies.'
+            );
+        }
+
+        // Trim whitespace from the reply body to ensure accurate validation.
+        $body = trim($body);
+
+        // Validate that the reply body is not empty.
+        if ($body === '') {
+            throw new InvalidArgumentException(
+                'Reply body cannot be empty.'
+            );
+        }
+
+        $maxLength = (int) config(
+            'persona.comments.max_length',
+            1000
+        );
+
+        // Validate that the reply body does not exceed the maximum allowed length as defined in the configuration.
+        if (mb_strlen($body) > $maxLength) {
+            throw new InvalidArgumentException(
+                "Reply body may not be greater than {$maxLength} characters."
+            );
+        }
+
+        /** @var PersonaComment $reply */
+        $reply = $this->replies()->create([
+            'persona_id' => $this->persona_id,
+            'user_id' => $user->getKey(),
+            'body' => $body,
+            'is_approved' => ! config(
+                'persona.comments.require_approval',
+                false
+            ),
+        ]);
+
+        // Return the newly created reply comment instance.
+        return $reply;
     }
 
     /**

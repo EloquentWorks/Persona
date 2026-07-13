@@ -23,6 +23,12 @@ return new class extends Migration
                 ->constrained(config('persona.tables.profiles', 'persona_profiles'))
                 ->cascadeOnDelete();
 
+            // Foreign key to the same comments table, allowing for nested comments (replies). Nullable to allow top-level comments.
+            $table->foreignId('parent_id')
+                ->nullable()
+                ->constrained(config('persona.tables.comments', 'persona_comments'))
+                ->cascadeOnDelete();
+
             // Foreign key to the users table, linking the comment to the user who made it.
             $table->foreignId('user_id')
                 ->constrained(config('persona.tables.users', 'users'))
@@ -46,6 +52,9 @@ return new class extends Migration
             $table->index(['persona_id', 'is_approved']);
             $table->index(['persona_id', 'is_pinned']);
             $table->index(['user_id']);
+
+            // Index to optimize queries filtering by persona_id and parent_id, useful for retrieving nested comments.
+            $table->index(['persona_id', 'parent_id']);
         });
     }
 

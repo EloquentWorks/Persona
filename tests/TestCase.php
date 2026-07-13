@@ -88,5 +88,27 @@ abstract class TestCase extends Orchestra
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });
+
+        // Create the 'persona_comments' table with necessary columns and relationships for testing.
+        Schema::create('persona_comments', function (Blueprint $table): void {
+            $table->id();
+            $table->foreignId('persona_id')
+                ->constrained('persona_profiles')
+                ->cascadeOnDelete();
+            $table->foreignId('parent_id')
+                ->nullable()
+                ->constrained('persona_comments')
+                ->cascadeOnDelete();
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
+            $table->text('body');
+            $table->boolean('is_approved')->default(true);
+            $table->boolean('is_pinned')->default(false);
+            $table->timestamp('edited_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+            $table->index(['persona_id', 'parent_id']);
+        });
     }
 }

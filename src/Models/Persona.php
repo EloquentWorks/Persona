@@ -477,30 +477,34 @@ class Persona extends Model
     }
 
     /**
-     * Get approved comments for this profile.
+     * Get approved top-level comments for this profile.
      *
      * @return HasMany<PersonaComment, $this>
      */
     public function approvedComments(): HasMany
     {
         /** @var HasMany<PersonaComment, $this> $relationship */
-        $relationship = $this->comments()->approved();
+        $relationship = $this->comments()
+            ->topLevel()
+            ->approved();
 
-        // Return the relationship to the PersonaComment model, filtered to only include comments that are approved.
+        // Return the relationship to the PersonaComment model, filtered to only include top-level comments that are approved.
         return $relationship;
     }
 
     /**
-     * Get pinned comments for this profile.
+     * Get pinned top-level comments for this profile.
      *
      * @return HasMany<PersonaComment, $this>
      */
     public function pinnedComments(): HasMany
     {
         /** @var HasMany<PersonaComment, $this> $relationship */
-        $relationship = $this->comments()->pinned();
+        $relationship = $this->comments()
+            ->topLevel()
+            ->pinned();
 
-        // Return the relationship to the PersonaComment model, filtered to only include comments that are pinned.
+        // Return the relationship to the PersonaComment model, filtered to only include top-level comments that are pinned.
         return $relationship;
     }
 
