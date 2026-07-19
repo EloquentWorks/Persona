@@ -183,4 +183,41 @@ trait HasPersona
         // Delegate the comment creation to the Persona profile's addComment method.
         return $persona->addComment($this, $body);
     }
+
+    /**
+     * Get the completeness score of the Persona profile for this model.
+     *
+     * @return int Returns the completeness score (0-100).
+     */
+    public function personaCompletenessScore(): int
+    {
+        // Retrieve the Persona profile for this model.
+        $profile = $this->persona()->first();
+    
+        // If the profile exists and has a method to refresh completeness, call it; otherwise, return 0.
+        return $profile && method_exists($profile, 'refreshCompleteness')
+            ? $profile->refreshCompleteness()
+            : 0;
+    }
+    
+    /**
+     * Award a badge to the Persona profile for this model.
+     *
+     * @param  string  $name  The name of the badge to award.
+     * @param  array<string, mixed>  $attributes  Additional attributes for the badge.
+     * @return mixed Returns the result of awarding the badge, or null if not applicable.
+     */
+    public function awardPersonaBadge(string $name, array $attributes = []): mixed
+    {
+        // Retrieve the Persona profile for this model.
+        $profile = $this->persona()->first();
+    
+        // If the profile exists and has a method to award badges, call it; otherwise, return null.
+        if (! $profile || ! method_exists($profile, 'awardBadge')) {
+            return null;
+        }
+    
+        // Delegate the badge awarding to the Persona profile's awardBadge method.
+        return $profile->awardBadge($name, $attributes, $this);
+    }
 }

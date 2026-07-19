@@ -2,6 +2,7 @@
 
 namespace EloquentWorks\Persona\Models;
 
+use EloquentWorks\Persona\Traits\InteractsWithPersonaEnhancements;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -46,6 +47,8 @@ use LogicException;
  */
 class Persona extends Model
 {
+    use InteractsWithPersonaEnhancements;
+
     /** @var list<string> The attributes that are mass assignable. */
     protected $fillable = [
         'user_id',
@@ -67,6 +70,12 @@ class Persona extends Model
         'username_tokens_granted_at',
         'username_changed_at',
         'published_at',
+        'featured_links',
+        'seo_title',
+        'seo_description',
+        'profile_completeness_score',
+        'profile_completed_at',
+        'last_viewed_at',
     ];
 
     /** @var array<string, string> The attributes that should be cast. */
@@ -80,6 +89,10 @@ class Persona extends Model
         'username_tokens_granted_at' => 'datetime',
         'username_changed_at' => 'datetime',
         'published_at' => 'datetime',
+        'featured_links' => 'array',
+        'profile_completed_at' => 'datetime',
+        'last_viewed_at' => 'datetime',
+        'profile_completeness_score' => 'integer',
     ];
 
     /**

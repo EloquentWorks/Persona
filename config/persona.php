@@ -1,8 +1,11 @@
 <?php
 
 use EloquentWorks\Persona\Http\Controllers\PersonaController;
-use EloquentWorks\Persona\Models\Persona;
+use EloquentWorks\Persona\Models\AdvancedPerson;
+use EloquentWorks\Persona\Models\PersonaBadge;
 use EloquentWorks\Persona\Models\PersonaComment;
+use EloquentWorks\Persona\Models\PersonaUsernameHistory;
+use EloquentWorks\Persona\Models\PersonaView;
 
 return [
 
@@ -22,6 +25,9 @@ return [
         'profiles' => 'persona_profiles',
         'comments' => 'persona_comments',
         'users' => 'users',
+        'views' => 'persona_views',
+        'username_histories' => 'persona_username_histories',
+        'badges' => 'persona_badges',
     ],
 
     /*
@@ -38,9 +44,12 @@ return [
     */
 
     'models' => [
-        'persona' => Persona::class,
+        'persona' => AdvancedPersona::class,
         'comment' => PersonaComment::class,
         'user' => null,
+        'view' => PersonaView::class,
+        'username_history' => PersonaUsernameHistory::class,
+        'badge' => PersonaBadge::class,
     ],
 
     /*
@@ -94,14 +103,22 @@ return [
         'regex' => '/^[a-z0-9_][a-z0-9_-]*[a-z0-9_]$/',
         'reserved' => [
             'admin',
+            'administrator',
             'api',
+            'app',
+            'billing',
             'dashboard',
+            'help',
             'login',
             'logout',
+            'me',
             'register',
+            'root',
+            'security',
             'settings',
+            'staff',
             'support',
-            'users',
+            'system',
         ],
     ],
 
@@ -120,6 +137,9 @@ return [
     'views' => [
         'show' => 'persona::show',
         'layout' => null,
+        'retention_days' => 365,
+        'hash_ip' => true,
+        'hash_user_agent' => true,
     ],
 
     /*
@@ -138,6 +158,55 @@ return [
         'disk' => 'public',
         'avatar_directory' => 'personas/avatars',
         'banner_directory' => 'personas/banners',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Persona Badges
+    |--------------------------------------------------------------------------
+    |
+    | Badges are optional awards that can be displayed on public profiles.
+    |
+    | You may enable or disable badges and control whether they are public by
+    | default. Applications are responsible for creating and managing badges.
+    |
+    */
+
+    'badges' => [
+        'enabled' => true,
+        'public_by_default' => true,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Persona Flash Messages
+    |--------------------------------------------------------------------------
+    |
+    | These settings control how flash messages are displayed after profile
+    | actions such as creating or updating a profile.
+    |
+    | You may customize the session key used for flash messages.
+    |
+    */
+
+    'flash' => [
+        'success_key' => 'status',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Persona Messages
+    |--------------------------------------------------------------------------
+    |
+    | These messages are used when returning responses after profile actions.
+    |
+    | You may customize these messages to suit your application's tone and
+    | style.
+    |
+    */
+
+    'messages' => [
+        'comment_created' => 'Comment posted.',
     ],
 
     /*
@@ -290,6 +359,9 @@ return [
             'tiktok',
             'website',
         ],
+        'allowed_schemes' => ['http', 'https'],
+        'max_custom_links' => 10,
+        'max_featured_links' => 5,
     ],
 
     /*

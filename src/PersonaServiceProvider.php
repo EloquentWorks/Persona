@@ -3,7 +3,11 @@
 namespace EloquentWorks\Persona;
 
 use EloquentWorks\Persona\Console\Commands\InstallPersonaCommand;
+use EloquentWorks\Persona\Console\Commands\PrunePersonaViewsCommand;
 use EloquentWorks\Persona\Http\Controllers\PersonaController;
+use EloquentWorks\Persona\Http\Middleware\EnsurePersonaIsVisible;
+use EloquentWorks\Persona\Support\PersonaManager;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -22,6 +26,10 @@ class PersonaServiceProvider extends ServiceProvider
     {
         // Merge the package's configuration file with the application's configuration to allow customization.
         $this->mergeConfigFrom(__DIR__.'/../config/persona.php', 'persona');
+
+        // Register the PersonaManager as a singleton in the service container for easy access throughout the application.
+        $this->app->singleton(PersonaManager::class, fn (): PersonaManager => new PersonaManager());
+        $this->app->alias(PersonaManager::class, 'persona');
     }
 
     /**
@@ -37,6 +45,12 @@ class PersonaServiceProvider extends ServiceProvider
         // Load the Persona views from the package's resources/views directory for use in the application.
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'persona');
 
+        // Register the Persona middleware alias to ensure that the persona is visible before accessing certain routes.
+        $this->app->make(Router::class)->aliasMiddleware('persona.visible', EnsurePersonaIsVisible::class);
+
+        // Register a custom Blade directive to conditionally display content based on the visibility of a persona.
+        Blade::if('personaVisible', static fn ($persona): bool => $persona?->isVisible() ?? false);
+
         // If we are not running in the console, skip the following console-specific bootstrapping.
         if (! $this->app->runningInConsole()) {
             return;
@@ -45,6 +59,7 @@ class PersonaServiceProvider extends ServiceProvider
         // Register the Persona installation command for use in the console.
         $this->commands([
             InstallPersonaCommand::class,
+            PrunePersonaViewsCommand::class,
         ]);
 
         // Publish the Persona configuration file to the application's config directory for customization.
