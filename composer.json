@@ -1,6 +1,6 @@
 {
     "name": "eloquent-works/persona",
-    "description": "EloquentWorks Persona gives your users elegant public profiles with slugs, bios, avatars, links, visibility, and profile pages.",
+    "description": "Laravel Persona gives your users elegant public profiles with slugs, bios, avatars, links, visibility, and profile pages.",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -49,15 +49,18 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit",
-        "analyse": "vendor/bin/phpstan analyse",
-        "format": "vendor/bin/pint"
+        "format": "pint",
+        "format:test": "pint --test",
+        "analyse": "phpstan analyse --memory-limit=1G",
+        "test": "phpunit",
+        "quality": [
+            "@format:test",
+            "@analyse",
+            "@test"
+        ]
     },
     "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "pestphp/pest-plugin": true
-        }
+        "sort-packages": true
     },
     "minimum-stability": "stable",
     "prefer-stable": true
