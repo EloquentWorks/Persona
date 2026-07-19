@@ -15,6 +15,10 @@
             "name": "Eloquent Works"
         }
     ],
+    "support": {
+        "issues": "https://github.com/EloquentWorks/Persona/issues",
+        "source": "https://github.com/EloquentWorks/Persona"
+    },
     "require": {
         "php": "^8.2",
         "illuminate/contracts": "^11.15|^12.0|^13.0",
