@@ -14,14 +14,13 @@ final class PersonaBadgeAwarded
     /**
      * Create a new event instance.
      *
-     * @param Persona $persona The persona that received the badge.
-     * @param PersonaBadge $badge The badge that was awarded.
-     * @param Authenticatable|null $awardedBy The user who awarded the badge, if any.
+     * @param  Persona  $persona  The persona that received the badge.
+     * @param  PersonaBadge  $badge  The badge that was awarded.
+     * @param  Authenticatable|null  $awardedBy  The user who awarded the badge, if any.
      */
     public function __construct(
         public Persona $persona,
         public PersonaBadge $badge,
         public ?Authenticatable $awardedBy = null,
-    ) {
-    }
+    ) {}
 }

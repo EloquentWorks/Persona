@@ -6,9 +6,6 @@ final class SafeProfileUrl
 {
     /**
      * Determine if the given URL is safe to use in a profile.
-     *
-     * @param  string|null  $url
-     * @return bool
      */
     public static function isSafe(?string $url): bool
     {

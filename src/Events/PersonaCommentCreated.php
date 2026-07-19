@@ -13,12 +13,11 @@ final class PersonaCommentCreated
     /**
      * Create a new event instance.
      *
-     * @param Persona $persona The persona on which the comment was created.
-     * @param PersonaComment $comment The comment that was created.
+     * @param  Persona  $persona  The persona on which the comment was created.
+     * @param  PersonaComment  $comment  The comment that was created.
      */
     public function __construct(
         public Persona $persona,
         public PersonaComment $comment,
-    ) {
-    }
+    ) {}
 }

@@ -16,7 +16,7 @@ final class ReservedUsername
     /**
      * Check if a given username is reserved.
      *
-     * @param string $username The username to check.
+     * @param  string  $username  The username to check.
      * @return bool True if the username is reserved, false otherwise.
      */
     public static function isReserved(string $username): bool

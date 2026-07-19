@@ -34,7 +34,7 @@ final class ProfileCompleteness
     /**
      * Calculate the profile completeness score as a percentage.
      *
-     * @param Persona $persona The persona instance to calculate the score for.
+     * @param  Persona  $persona  The persona instance to calculate the score for.
      * @return int The profile completeness score as a percentage (0-100).
      */
     public static function score(Persona $persona): int
@@ -57,7 +57,7 @@ final class ProfileCompleteness
     /**
      * Check if the given value is a non-empty array.
      *
-     * @param mixed $value The value to check.
+     * @param  mixed  $value  The value to check.
      * @return bool True if the value is a non-empty array, false otherwise.
      */
     private static function hasArrayValue(mixed $value): bool

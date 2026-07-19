@@ -86,7 +86,6 @@ trait InteractsWithPersonaEnhancements
      * Record a detailed profile view and keep the existing profile_views counter in sync.
      *
      * @param  array<string, mixed>  $metadata
-     * @return PersonaView
      */
     public function recordDetailedView(?Request $request = null, ?Authenticatable $viewer = null, array $metadata = [], ?string $source = null): PersonaView
     {

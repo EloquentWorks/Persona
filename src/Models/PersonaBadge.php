@@ -46,8 +46,6 @@ class PersonaBadge extends Model
 
     /**
      * Get the table associated with the model.
-     *
-     * @return string
      */
     public function getTable(): string
     {
@@ -82,8 +80,6 @@ class PersonaBadge extends Model
 
     /**
      * Determine if the badge is currently active (not revoked and not expired).
-     *
-     * @return bool
      */
     public function isActive(): bool
     {

@@ -31,8 +31,6 @@ final class PersonaManager
 
     /**
      * Resolve an old username to the latest visible profile when username history is enabled.
-     *
-     * @return Persona|null
      */
     public function resolveHistoricalSlug(string $slug): ?Persona
     {

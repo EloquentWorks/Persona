@@ -15,10 +15,6 @@ final class PersonaCommentController extends Controller
 {
     /**
      * Store a newly created comment in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \EloquentWorks\Persona\Models\Persona  $persona
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, Persona $persona): RedirectResponse
     {

@@ -43,7 +43,7 @@ return new class extends Migration
 
             // Store a polymorphic relationship to the model that awarded the badge. This allows for flexibility in awarding badges from different models (e.g., users, admins, etc.).
             $table->nullableMorphs('awarded_by');
-            
+
             // Store additional metadata about the badge in a JSON column, allowing for flexible storage of various attributes related to the badge. This column is nullable to accommodate badges that may not have any additional metadata.
             $table->json('metadata')->nullable();
 

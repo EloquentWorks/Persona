@@ -60,7 +60,7 @@ class PersonaView extends Model
         /** @var BelongsTo<Persona, $this> $relationship */
         $relationship = $this->belongsTo($personaModel, 'persona_id');
 
-        // @phpstan-ignore-next-line
+        // Return the relationship instance for the persona associated with this view.
         return $relationship;
     }
 

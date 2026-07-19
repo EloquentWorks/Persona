@@ -1,7 +1,6 @@
 <?php
 
 use EloquentWorks\Persona\Http\Controllers\PersonaController;
-use EloquentWorks\Persona\Models\AdvancedPerson;
 use EloquentWorks\Persona\Models\PersonaBadge;
 use EloquentWorks\Persona\Models\PersonaComment;
 use EloquentWorks\Persona\Models\PersonaUsernameHistory;

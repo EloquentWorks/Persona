@@ -10,7 +10,6 @@ use EloquentWorks\Persona\Rules\ReservedPersonaUsername;
 use EloquentWorks\Persona\Rules\SafeProfileUrl;
 use EloquentWorks\Persona\Support\ProfileCompleteness;
 use EloquentWorks\Persona\Support\ReservedUsername;
-use EloquentWorks\Persona\Tests\Fixtures\User;
 use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 
@@ -27,7 +26,7 @@ final class AdvancedPersonaFeatureTest extends TestCase
     {
         $validator = Validator::make(
             ['slug' => 'admin'],
-            ['slug' => [new ReservedPersonaUsername()]]
+            ['slug' => [new ReservedPersonaUsername]]
         );
 
         $this->assertTrue($validator->fails());
@@ -37,7 +36,7 @@ final class AdvancedPersonaFeatureTest extends TestCase
     {
         $validator = Validator::make(
             ['website_url' => 'javascript:alert(1)'],
-            ['website_url' => [new SafeProfileUrl()]]
+            ['website_url' => [new SafeProfileUrl]]
         );
 
         $this->assertTrue($validator->fails());
@@ -56,8 +55,8 @@ final class AdvancedPersonaFeatureTest extends TestCase
 
     public function test_models_resolve_configured_table_names(): void
     {
-        $this->assertSame('persona_views', (new PersonaView())->getTable());
-        $this->assertSame('persona_username_histories', (new PersonaUsernameHistory())->getTable());
-        $this->assertSame('persona_badges', (new PersonaBadge())->getTable());
+        $this->assertSame('persona_views', (new PersonaView)->getTable());
+        $this->assertSame('persona_username_histories', (new PersonaUsernameHistory)->getTable());
+        $this->assertSame('persona_badges', (new PersonaBadge)->getTable());
     }
 }

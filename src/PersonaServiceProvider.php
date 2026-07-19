@@ -7,8 +7,8 @@ use EloquentWorks\Persona\Console\Commands\PrunePersonaViewsCommand;
 use EloquentWorks\Persona\Http\Controllers\PersonaController;
 use EloquentWorks\Persona\Http\Middleware\EnsurePersonaIsVisible;
 use EloquentWorks\Persona\Support\PersonaManager;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 
@@ -28,7 +28,7 @@ class PersonaServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/persona.php', 'persona');
 
         // Register the PersonaManager as a singleton in the service container for easy access throughout the application.
-        $this->app->singleton(PersonaManager::class, fn (): PersonaManager => new PersonaManager());
+        $this->app->singleton(PersonaManager::class, fn (): PersonaManager => new PersonaManager);
         $this->app->alias(PersonaManager::class, 'persona');
     }
 
