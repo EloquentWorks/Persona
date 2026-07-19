@@ -1,52 +1,38 @@
-# Installation
+# 📦 Installation
 
-## Requirements
+This guide explains how to install Laravel Persona.
 
-- PHP 8.2 or newer
-- Laravel 11, 12, or 13
-- An Eloquent user model
+## ✅ Requirements
 
-## Install through Composer
+| Laravel | PHP | Orchestra Testbench |
+| --- | --- | --- |
+| 11.15+ | 8.2+ | 9.x |
+| 12.x | 8.2+ | 10.x |
+| 13.x | 8.3+ | 11.x |
+
+## 📥 Install with Composer
 
 ```bash
 composer require eloquent-works/persona
 ```
 
-## Publish package files
-
-Publish the configuration and migrations:
+## 🧰 Run the Installer
 
 ```bash
 php artisan persona:install
 ```
 
-Optionally publish the package views:
+The installer publishes the configuration and migrations.
 
-```bash
-php artisan persona:install --views
-```
-
-Optionally publish the route snippet:
-
-```bash
-php artisan persona:install --routes
-```
-
-Use `--force` to overwrite previously published files:
-
-```bash
-php artisan persona:install --force
-```
-
-Run the migrations:
+## 🗃️ Run Migrations
 
 ```bash
 php artisan migrate
 ```
 
-## Add the trait
+## 🧬 Add the Trait
 
-Add `HasPersona` to your application user model:
+Add `HasPersona` to your user model:
 
 ```php
 <?php
@@ -62,20 +48,21 @@ class User extends Authenticatable
 }
 ```
 
-## Register public profile routes
+## ✅ Verify Installation
 
-Persona does not register public routes automatically. Add the route macro to `routes/web.php`:
+Create a profile:
 
 ```php
-use Illuminate\Support\Facades\Route;
-
-Route::persona();
+$user->persona()->create([
+    'slug' => 'signal-nick',
+    'display_name' => 'Nick',
+    'is_public' => true,
+    'published_at' => now(),
+]);
 ```
 
-The default public profile URL is:
+Load it:
 
-```text
-/@{username}
+```php
+$user->persona;
 ```
-
-Continue with [Usage](usage.md) or [Routes](routes.md).

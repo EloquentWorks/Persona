@@ -1,105 +1,72 @@
-# Customization
+# 🎨 Customization
 
-Persona can be customized through configuration, replacement models, views, routes, and application-level validation.
+Persona is designed to be customized by Laravel applications.
 
-## Publish configuration
+## 🧩 Custom Models
 
-```bash
-php artisan vendor:publish --tag=persona-config
+Use configuration to replace models:
+
+```php
+'models' => [
+    'persona' => App\Models\Profile::class,
+    'comment' => App\Models\ProfileComment::class,
+],
 ```
 
-## Publish views
+## 🗃️ Custom Table Names
+
+```php
+'tables' => [
+    'profiles' => 'profiles',
+    'comments' => 'profile_comments',
+],
+```
+
+## 🛣️ Custom Routes
+
+Disable built-in routes:
+
+```php
+'routes' => [
+    'enabled' => false,
+],
+```
+
+Register your own:
+
+```php
+Route::get('/people/{persona:slug}', ProfileController::class)
+    ->name('profiles.show');
+```
+
+## 🖼️ Custom Views
+
+Publish the views:
 
 ```bash
 php artisan vendor:publish --tag=persona-views
 ```
 
-Published views are placed in:
+Then customize files under:
 
 ```text
 resources/views/vendor/persona
 ```
 
-## Custom Persona model
+## ✅ Custom Validation
 
-```php
-<?php
+Persona keeps validation flexible so applications can define their own rules.
 
-namespace App\Models;
+Recommended fields to validate:
 
-use EloquentWorks\Persona\Models\Persona as BasePersona;
-
-class Persona extends BasePersona
-{
-    // Application-specific behavior.
-}
-```
-
-Register it:
-
-```php
-'models' => [
-    'persona' => App\Models\Persona::class,
-],
-```
-
-## Custom comment model
-
-```php
-<?php
-
-namespace App\Models;
-
-use EloquentWorks\Persona\Models\PersonaComment as BasePersonaComment;
-
-class PersonaComment extends BasePersonaComment
-{
-    // Application-specific behavior.
-}
-```
-
-Register it:
-
-```php
-'models' => [
-    'comment' => App\Models\PersonaComment::class,
-],
-```
-
-## Validation responsibilities
-
-Persona exposes configurable limits for profile fields, usernames, comments, and links. The consuming application should use those values in form requests.
-
-Persona does not automatically enforce:
-
-- profile field limits on arbitrary model assignment
-- social or custom link limits
-- guest comment access
-- comment authorization
-- rate limiting or spam protection
-
-## Comment behavior
-
-Persona supports one reply level and uses soft deletes. These behaviors are part of the package's current model design rather than runtime configuration switches.
-
-Applications may replace the comment model when deeper customization is required.
-
-## Custom route
-
-```php
-Route::persona([
-    'prefix' => 'members',
-    'path' => '{persona}',
-    'name' => 'members.',
-    'middleware' => ['web'],
-    'controller' => App\Http\Controllers\MemberProfileController::class,
-]);
-```
-
-When changing the route name, update:
-
-```php
-'routes' => [
-    'show_name' => 'members.show',
-],
-```
+- Slug
+- Display name
+- Headline
+- Motto
+- Bio
+- Location
+- Website URL
+- Social links
+- Custom links
+- Avatar file
+- Banner file

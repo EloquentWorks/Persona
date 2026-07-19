@@ -1,8 +1,10 @@
-# Contributing
+# 🤝 Contributing to Laravel Persona
 
-Thanks for wanting to contribute to this Eloquent Works package.
+Thank you for considering a contribution to Laravel Persona.
 
-## How to Contribute
+Laravel Persona is an Eloquent Works package focused on elegant public profile tooling for Laravel applications.
+
+## 🧭 Ways to Contribute
 
 You can help by:
 
@@ -10,26 +12,52 @@ You can help by:
 - Suggesting features
 - Improving documentation
 - Adding tests
-- Submitting pull requests
+- Fixing edge cases
+- Improving static analysis coverage
+- Improving examples
 
-## Setup
+## 🐛 Reporting Bugs
 
-Clone the repository and install dependencies:
+When reporting a bug, include:
+
+- Laravel version
+- PHP version
+- Package version
+- Database driver
+- Clear reproduction steps
+- Expected behavior
+- Actual behavior
+- Relevant stack traces
+
+## ✨ Feature Requests
+
+When suggesting a feature, explain:
+
+- The problem it solves
+- Why it belongs in Persona
+- Example usage
+- Configuration needs
+- Backward compatibility concerns
+
+## 🧪 Development Setup
+
+Clone the repository:
+
+```bash
+git clone https://github.com/EloquentWorks/Persona.git
+cd Persona
+```
+
+Install dependencies:
 
 ```bash
 composer install
 ```
 
-Run the tests:
+Run tests:
 
 ```bash
 composer test
-```
-
-Run code formatting:
-
-```bash
-composer format
 ```
 
 Run static analysis:
@@ -38,32 +66,37 @@ Run static analysis:
 composer analyse
 ```
 
-## Pull Requests
+Run formatting:
 
-Before opening a pull request, please make sure:
+```bash
+composer format
+```
 
-- Your change has one clear purpose
-- Tests pass
-- Code is formatted with Laravel Pint
-- Documentation is updated if needed
+Run the full quality suite:
 
-## Bug Reports
+```bash
+composer quality
+```
 
-When reporting a bug, include:
+## 🧱 Pull Request Guidelines
 
-- Package version
-- PHP version
-- Laravel version
-- Steps to reproduce
-- Expected behavior
-- Actual behavior
+Before opening a pull request:
 
-## Code Style
+- Keep changes focused.
+- Add or update tests.
+- Update documentation.
+- Run the quality suite.
+- Avoid unrelated formatting changes.
+- Explain why the change is needed.
 
-This package follows Laravel-style code conventions and uses Laravel Pint.
+## 📚 Documentation Changes
 
-## Security
+Documentation should be clear, friendly, and practical.
 
-Please do not open public issues for security problems. Report security concerns privately.
+When adding a feature, update the relevant file in `docs/` and update `README.md` if the feature affects common usage.
 
-Thank you for helping improve this package.
+## 🔐 Security Issues
+
+Do not open public issues for vulnerabilities.
+
+Follow the private reporting instructions in `SECURITY.md`.

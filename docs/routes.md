@@ -1,83 +1,52 @@
-# Routes
+# 🛣️ Routes
 
-Persona does not register public profile routes automatically.
+Persona can register public profile routes or let your application define its own.
 
-## Register the default route
+## ✅ Built-In Routes
 
-Add this to `routes/web.php`:
+Example route shape:
 
 ```php
-use Illuminate\Support\Facades\Route;
-
-Route::persona();
+Route::get('/@{persona:slug}', ShowPersonaController::class)
+    ->name('persona.show');
 ```
 
-The default route is:
-
-| Method | URI | Name | Controller |
-| --- | --- | --- | --- |
-| GET | `/@{persona}` | `persona.show` | `PersonaController@show` |
-
-The `{persona}` value is resolved as the profile slug.
-
-## Customize the route
+## ⚙️ Route Configuration
 
 ```php
-Route::persona([
-    'prefix' => 'profiles',
-    'path' => '{persona}',
-    'name' => 'profiles.',
+'routes' => [
+    'enabled' => true,
+    'prefix' => '',
     'middleware' => ['web'],
-]);
+    'show_name' => 'persona.show',
+],
 ```
 
-This produces:
-
-```text
-/profiles/{persona}
-```
-
-with the route name:
-
-```text
-profiles.show
-```
-
-## Protect routes
-
-```php
-Route::persona([
-    'middleware' => ['web', 'auth', 'verified'],
-]);
-```
-
-Public profiles typically only need `web`, but applications may provide any middleware string or array.
-
-## Use a custom controller
-
-```php
-Route::persona([
-    'controller' => App\Http\Controllers\ProfileController::class,
-]);
-```
-
-The controller must provide a `show` method compatible with the generated route:
-
-```php
-public function show(string $persona)
-{
-    // Resolve and display the profile.
-}
-```
-
-## Generate URLs
+## 🔗 Generate Profile URLs
 
 ```php
 route('persona.show', $profile);
 
 $profile->url();
-
-$user->personaUrl();
 ```
 
-When changing the route name, also update `persona.routes.show_name` so `url()` and `personaUrl()` use the correct route.
+## 🚫 Disable Built-In Routes
+
+```php
+'routes' => [
+    'enabled' => false,
+],
+```
+
+Then define your own route:
+
+```php
+Route::get('/users/{persona:slug}', ShowProfileController::class)
+    ->name('profiles.show');
+```
+
+## 🔐 Route Safety
+
+Public profile routes should use visible-profile checks.
+
+Do not allow private or unpublished profiles to be shown unless the current user is authorized.

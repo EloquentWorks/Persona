@@ -1,34 +1,20 @@
-# Testing
+# ✅ Testing
 
-## Install dependencies
+Persona includes PHPUnit and Orchestra Testbench support.
 
-```bash
-composer install
-```
-
-## Run PHPUnit
+## 🧪 Run Tests
 
 ```bash
 composer test
 ```
 
-Or run PHPUnit directly:
-
-```bash
-vendor/bin/phpunit
-```
-
-## Static analysis
+## 🔎 Run Static Analysis
 
 ```bash
 composer analyse
 ```
 
-This runs PHPStan with the package's `phpstan.neon` configuration.
-
-## Code formatting
-
-Format the package:
+## 🎨 Run Pint
 
 ```bash
 composer format
@@ -40,36 +26,33 @@ Check formatting without changing files:
 vendor/bin/pint --test
 ```
 
-## Run an individual test
+## 🧰 Run Everything
 
 ```bash
-vendor/bin/phpunit --filter PersonaCommentTest
+composer quality
 ```
 
-## Test coverage
+## 📋 Recommended Coverage
 
-Persona's tests should cover:
+Good Persona tests should cover:
 
-- profile creation and updates
-- slug generation
-- username token earning and spending
-- profile visibility and route resolution
-- profile view recording
-- top-level comments and replies
-- two-level reply enforcement
-- approval and pinning
-- editing and soft deletion
-- force deletion of comment threads
-- package installation and publishing
-
-## Before opening a pull request
-
-Run:
-
-```bash
-composer test
-composer analyse
-vendor/bin/pint --test
-```
-
-All commands should pass before submitting changes.
+- Trait relationships
+- Profile creation
+- Profile updates
+- Public/private visibility
+- Published/unpublished visibility
+- URL generation
+- Avatar URL generation
+- Banner URL generation
+- View tracking
+- Username token calculation
+- Username changes
+- Username uniqueness
+- Comment creation
+- Reply creation
+- Max comment depth
+- Guest comment restrictions
+- Configurable models
+- Configurable table names
+- Route rendering
+- View publishing

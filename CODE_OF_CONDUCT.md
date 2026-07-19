@@ -1,43 +1,40 @@
-# Code of Conduct
+# 🤝 Code of Conduct
 
-## Our Pledge
+## 🌟 Our Pledge
 
-We want this project to be a welcoming and respectful place for everyone.
+We pledge to make participation in this project a respectful and welcoming experience for everyone.
 
-Anyone contributing to this project is expected to treat others with kindness, patience, and professionalism.
+## ✅ Expected Behavior
 
-## Expected Behavior
+Examples of behavior that contributes to a positive environment include:
 
-Examples of good behavior include:
+- Being respectful and constructive
+- Welcoming new contributors
+- Accepting feedback gracefully
+- Focusing on what is best for the project
+- Showing empathy toward other community members
 
-- Being respectful in discussions
-- Giving helpful feedback
-- Accepting constructive criticism
-- Staying focused on the project
-- Helping others learn and improve
-
-## Unacceptable Behavior
+## 🚫 Unacceptable Behavior
 
 Examples of unacceptable behavior include:
 
-- Harassment, insults, or personal attacks
-- Discriminatory language or behavior
-- Trolling or intentionally disruptive comments
-- Sharing private information without permission
-- Any behavior that makes the project unsafe or unwelcoming
+- Harassment or discriminatory language
+- Personal attacks
+- Trolling or insulting comments
+- Publishing private information
+- Repeated disruptive behavior
 
-## Reporting Issues
+## 🛡️ Enforcement
 
-If you see behavior that violates this Code of Conduct, please contact the project maintainer privately.
+Project maintainers may remove comments, reject contributions, or restrict participation when behavior violates this code of conduct.
 
-Maintainers may remove comments, close issues, reject pull requests, or block users who violate this Code of Conduct.
+## 📬 Reporting
 
-## Scope
+Report conduct concerns privately to the project maintainers.
 
-This Code of Conduct applies to all project spaces, including issues, pull requests, discussions, and other community interactions.
+Please include:
 
-## Enforcement
-
-Maintainers are responsible for keeping the project respectful and productive.
-
-Thank you for helping make this project better.
+- What happened
+- Where it happened
+- Who was involved
+- Any relevant context or screenshots

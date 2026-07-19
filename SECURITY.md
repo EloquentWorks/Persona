@@ -1,39 +1,49 @@
-# Security Policy
+# 🔐 Security Policy
 
-## Supported Versions
+## ✅ Supported Versions
 
-Security updates are provided for the latest stable version of this package.
+Security updates are provided for the latest stable release of Laravel Persona.
 
 | Version | Supported |
-| ------- | --------- |
-| Latest  | Yes       |
-| Older versions | No |
+| --- | --- |
+| 1.x | ✅ |
+| < 1.0 | ❌ |
 
-## Reporting a Vulnerability
+## 🚨 Reporting a Vulnerability
 
-Please do not report security vulnerabilities through public GitHub issues.
+Please do not open public GitHub issues for security vulnerabilities.
 
-If you discover a security issue, please report it privately by contacting the maintainer.
+Report security issues privately to the maintainers.
 
-Include as much detail as possible:
+Include:
 
-- Package name and version
-- A clear description of the vulnerability
-- Steps to reproduce the issue
-- Potential impact
-- Any suggested fix, if available
+- A clear description of the issue
+- Reproduction steps
+- Impact assessment
+- Affected versions
+- Suggested fix, if known
 
-## Response Process
+## 🧾 Security Notes
 
-After a vulnerability is reported:
+Laravel Persona handles user-generated profile data.
 
-1. The maintainer will review the report.
-2. If confirmed, a fix will be prepared as soon as reasonably possible.
-3. A new release will be published when the fix is ready.
-4. Public details may be shared after users have had time to update.
+Applications should:
 
-## Responsible Disclosure
+- Authorize profile edits.
+- Validate profile slugs.
+- Validate public URLs.
+- Escape rendered profile content.
+- Avoid exposing private profiles.
+- Avoid exposing unpublished profiles when publishing is required.
+- Protect profile media uploads.
+- Moderate comments when public interaction is enabled.
 
-Please give the maintainer reasonable time to investigate and fix the issue before sharing details publicly.
+## 🔗 URL Safety
 
-Thank you for helping keep this package and its users safe.
+If your application allows website, social, or custom links, validate protocols and avoid rendering untrusted `javascript:` or unsafe URLs.
+
+## 💬 Comment Safety
+
+If comments are enabled, treat all comment bodies and author names as untrusted user-generated content.
+
+Escape rendered content and add application-level moderation when needed.
