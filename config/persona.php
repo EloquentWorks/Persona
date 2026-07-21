@@ -43,7 +43,7 @@ return [
     */
 
     'models' => [
-        'persona' => AdvancedPersona::class,
+        'persona' => Persona::class,
         'comment' => PersonaComment::class,
         'user' => null,
         'view' => PersonaView::class,
