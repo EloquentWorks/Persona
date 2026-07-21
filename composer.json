@@ -49,7 +49,10 @@
         "laravel": {
             "providers": [
                 "EloquentWorks\\Persona\\PersonaServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "Persona": "EloquentWorks\\Persona\\Facades\\Persona"
+            }
         }
     },
     "scripts": {
