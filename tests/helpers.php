@@ -1,6 +1,6 @@
 <?php
 
-use Tests\Fixtures\User;
+use EloquentWorks\Persona\Tests\Fixtures\User;
 
 if (! function_exists('createUser')) {
     /**
