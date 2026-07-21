@@ -2,8 +2,8 @@
 
 namespace EloquentWorks\Persona\Tests\Feature;
 
-use PHPUnit\Framework\Attributes\Test;
 use EloquentWorks\Persona\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class InstallPersonaCommandTest extends TestCase
 {

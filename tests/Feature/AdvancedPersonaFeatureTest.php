@@ -10,8 +10,8 @@ use EloquentWorks\Persona\Rules\ReservedPersonaUsername;
 use EloquentWorks\Persona\Rules\SafeProfileUrl;
 use EloquentWorks\Persona\Support\ProfileCompleteness;
 use EloquentWorks\Persona\Support\ReservedUsername;
-use Illuminate\Support\Facades\Validator;
 use EloquentWorks\Persona\Tests\TestCase;
+use Illuminate\Support\Facades\Validator;
 
 final class AdvancedPersonaFeatureTest extends TestCase
 {

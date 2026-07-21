@@ -3,10 +3,10 @@
 namespace EloquentWorks\Persona\Tests\Unit;
 
 use EloquentWorks\Persona\Models\PersonaComment;
+use EloquentWorks\Persona\Tests\TestCase;
 use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\Attributes\Test;
-use EloquentWorks\Persona\Tests\TestCase;
 
 class PersonaCommentTest extends TestCase
 {

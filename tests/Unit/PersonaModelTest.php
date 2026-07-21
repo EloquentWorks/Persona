@@ -3,8 +3,8 @@
 namespace EloquentWorks\Persona\Tests\Unit;
 
 use EloquentWorks\Persona\Models\Persona;
-use PHPUnit\Framework\Attributes\Test;
 use EloquentWorks\Persona\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PersonaModelTest extends TestCase
 {

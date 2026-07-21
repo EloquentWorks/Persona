@@ -3,10 +3,10 @@
 namespace EloquentWorks\Persona\Tests\Feature;
 
 use EloquentWorks\Persona\Http\Controllers\PersonaController;
+use EloquentWorks\Persona\Tests\TestCase;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Attributes\Test;
-use EloquentWorks\Persona\Tests\TestCase;
 
 class PersonaRoutesTest extends TestCase
 {
