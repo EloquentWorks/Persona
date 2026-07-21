@@ -65,50 +65,7 @@ abstract class TestCase extends Orchestra
             $table->timestamps();
         });
 
-        // Create the 'persona_profiles' table with necessary columns for testing.
-        Schema::create('persona_profiles', function (Blueprint $table): void {
-            $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->string('slug')->unique();
-            $table->string('display_name')->nullable();
-            $table->string('headline')->nullable();
-            $table->text('bio')->nullable();
-            $table->string('location')->nullable();
-            $table->string('website_url')->nullable();
-            $table->string('avatar_path')->nullable();
-            $table->string('banner_path')->nullable();
-            $table->json('social_links')->nullable();
-            $table->json('custom_links')->nullable();
-            $table->json('metadata')->nullable();
-            $table->boolean('is_public')->default(true);
-            $table->unsignedInteger('username_tokens')->default(0);
-            $table->timestamp('username_tokens_granted_at')->nullable();
-            $table->timestamp('username_changed_at')->nullable();
-            $table->unsignedBigInteger('profile_views')->default(0);
-            $table->timestamp('published_at')->nullable();
-            $table->timestamps();
-        });
-
-        // Create the 'persona_comments' table with necessary columns and relationships for testing.
-        Schema::create('persona_comments', function (Blueprint $table): void {
-            $table->id();
-            $table->foreignId('persona_id')
-                ->constrained('persona_profiles')
-                ->cascadeOnDelete();
-            $table->foreignId('parent_id')
-                ->nullable()
-                ->constrained('persona_comments')
-                ->cascadeOnDelete();
-            $table->foreignId('user_id')
-                ->constrained('users')
-                ->cascadeOnDelete();
-            $table->text('body');
-            $table->boolean('is_approved')->default(true);
-            $table->boolean('is_pinned')->default(false);
-            $table->timestamp('edited_at')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-            $table->index(['persona_id', 'parent_id']);
-        });
+        // Load the package's database migrations from the specified directory for testing.
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
 }
