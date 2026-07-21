@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Unit;
+namespace EloquentWorks\Persona\Tests\Unit;
 
 use EloquentWorks\Persona\Support\SlugGenerator;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use EloquentWorks\Persona\Tests\TestCase;
 
 class SlugGeneratorTest extends TestCase
 {

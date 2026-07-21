@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace EloquentWorks\Persona\Tests;
 
 use EloquentWorks\Persona\PersonaServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
@@ -46,8 +46,8 @@ abstract class TestCase extends Orchestra
         ]);
 
         // Set the authentication user model to a custom User class defined in the Fixtures namespace for testing.
-        $app['config']->set('auth.providers.users.model', Fixtures\User::class);
-        $app['config']->set('persona.models.user', Fixtures\User::class);
+        $app['config']->set('auth.providers.users.model', \EloquentWorks\Persona\Tests\Fixtures\User::class);
+        $app['config']->set('persona.models.user', \EloquentWorks\Persona\Tests\Fixtures\User::class);
     }
 
     /**

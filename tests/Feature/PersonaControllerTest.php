@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature;
+namespace EloquentWorks\Persona\Tests\Feature;
 
 use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use EloquentWorks\Persona\Tests\TestCase;
 
 class PersonaControllerTest extends TestCase
 {

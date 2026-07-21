@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit;
+namespace EloquentWorks\Persona\Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use EloquentWorks\Persona\Tests\TestCase;
 
 class HasPersonaTest extends TestCase
 {

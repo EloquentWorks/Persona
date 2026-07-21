@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Feature;
+namespace EloquentWorks\Persona\Tests\Feature;
 
 use EloquentWorks\Persona\Http\Controllers\PersonaController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use EloquentWorks\Persona\Tests\TestCase;
 
 class PersonaRoutesTest extends TestCase
 {

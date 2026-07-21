@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Unit;
+namespace EloquentWorks\Persona\Tests\Unit;
 
 use EloquentWorks\Persona\Models\PersonaComment;
 use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use EloquentWorks\Persona\Tests\TestCase;
 
 class PersonaCommentTest extends TestCase
 {

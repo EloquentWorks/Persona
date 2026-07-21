@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature;
+namespace EloquentWorks\Persona\Tests\Feature;
 
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use EloquentWorks\Persona\Tests\TestCase;
 
 class InstallPersonaCommandTest extends TestCase
 {

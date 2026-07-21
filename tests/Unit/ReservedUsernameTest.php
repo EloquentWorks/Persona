@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit;
+namespace EloquentWorks\Persona\Tests\Unit;
 
 use EloquentWorks\Persona\Support\ReservedUsername;
-use Tests\TestCase;
+use EloquentWorks\Persona\Tests\TestCase;
 
 final class ReservedUsernameTest extends TestCase
 {

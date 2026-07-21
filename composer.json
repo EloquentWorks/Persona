@@ -39,7 +39,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "EloquentWorks\\Persona\\Tests\\": "tests/"
         },
         "files": [
             "tests/helpers.php"

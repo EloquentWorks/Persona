@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace EloquentWorks\Persona\Tests\Feature;
 
 use EloquentWorks\Persona\Models\Persona;
 use EloquentWorks\Persona\Models\PersonaBadge;
@@ -11,7 +11,7 @@ use EloquentWorks\Persona\Rules\SafeProfileUrl;
 use EloquentWorks\Persona\Support\ProfileCompleteness;
 use EloquentWorks\Persona\Support\ReservedUsername;
 use Illuminate\Support\Facades\Validator;
-use Tests\TestCase;
+use EloquentWorks\Persona\Tests\TestCase;
 
 final class AdvancedPersonaFeatureTest extends TestCase
 {

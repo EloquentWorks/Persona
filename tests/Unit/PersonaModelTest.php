@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Unit;
+namespace EloquentWorks\Persona\Tests\Unit;
 
 use EloquentWorks\Persona\Models\Persona;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use EloquentWorks\Persona\Tests\TestCase;
 
 class PersonaModelTest extends TestCase
 {

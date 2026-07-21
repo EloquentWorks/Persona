@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Fixtures;
+namespace EloquentWorks\Persona\Tests\Fixtures;
 
 use EloquentWorks\Persona\Traits\HasPersona;
 use Illuminate\Foundation\Auth\User as Authenticatable;
