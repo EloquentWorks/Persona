@@ -34,7 +34,7 @@ Add the new config keys from `PATCHES/04-config-persona.md`.
 
 ## 🧬 Model Trait
 
-Add `InteractsWithPersonaEnhancements` to the existing `Persona` model, or set the configured Persona model to `AdvancedPersona`.
+Add `InteractsWithPersonaEnhancements` to the existing `Persona` model.
 
 ## ✅ Quality
 

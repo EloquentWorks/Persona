@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use EloquentWorks\Persona\Models\AdvancedPersona;
+use EloquentWorks\Persona\Models\Persona;
 use EloquentWorks\Persona\Models\PersonaBadge;
 use EloquentWorks\Persona\Models\PersonaUsernameHistory;
 use EloquentWorks\Persona\Models\PersonaView;
@@ -44,7 +44,7 @@ final class AdvancedPersonaFeatureTest extends TestCase
 
     public function test_profile_completeness_returns_score(): void
     {
-        $persona = new AdvancedPersona([
+        $persona = new Persona([
             'display_name' => 'Nick',
             'headline' => 'Laravel Developer',
             'bio' => 'Building packages.',
