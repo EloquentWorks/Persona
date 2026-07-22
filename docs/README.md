@@ -6,20 +6,20 @@ Persona gives Laravel applications elegant public profile tools with slugs, disp
 
 ## 📚 Guides
 
-- [📦 Installation](installation.md)
-- [⚙️ Configuration](configuration.md)
-- [🧱 Architecture](architecture.md)
-- [🎭 Profiles](profiles.md)
-- [🪪 Usernames and Tokens](usernames-and-tokens.md)
-- [🔗 Links and Media](links-and-media.md)
-- [👁️ Visibility and Publishing](visibility-and-publishing.md)
-- [💬 Comments](comments.md)
-- [🛣️ Routes](routes.md)
-- [🖼️ Views and Blade](views-and-blade.md)
-- [🧰 Commands](commands.md)
-- [🎨 Customization](customization.md)
-- [🔐 Security](security.md)
-- [✅ Testing](testing.md)
+- [Installation](installation.md)
+- [Configuration](configuration.md)
+- [Architecture](architecture.md)
+- [Profiles](profiles.md)
+- [Usernames and Tokens](usernames-and-tokens.md)
+- [Links and Media](links-and-media.md)
+- [Visibility and Publishing](visibility-and-publishing.md)
+- [Comments](comments.md)
+- [Routes](routes.md)
+- [Views and Blade](views-and-blade.md)
+- [Commands](commands.md)
+- [Customization](customization.md)
+- [Security](security.md)
+- [Testing](testing.md)
 
 ## 🚀 Quick Start
 
