@@ -21,6 +21,75 @@ $comment = $profile->comments()->create([
 ]);
 ```
 
+## 📥 Retrieve Comments
+
+Retrieve all comments for a profile:
+
+```php
+$comments = $profile->comments()
+    ->latest()
+    ->get();
+```
+
+Retrieve approved top-level comments only:
+
+```php
+$comments = $profile->comments()
+    ->approved()
+    ->topLevel()
+    ->latest()
+    ->get();
+```
+
+Retrieve top-level comments with their approved replies:
+
+```php
+$comments = $profile->comments()
+    ->approved()
+    ->topLevel()
+    ->with([
+        'replies' => fn ($query) => $query
+            ->approved()
+            ->oldest(),
+    ])
+    ->latest()
+    ->get();
+```
+
+Paginate comments for a public profile page:
+
+```php
+$comments = $profile->comments()
+    ->approved()
+    ->topLevel()
+    ->with([
+        'replies' => fn ($query) => $query
+            ->approved()
+            ->oldest(),
+    ])
+    ->latest()
+    ->paginate(15);
+```
+
+Retrieve only replies:
+
+```php
+$replies = $profile->comments()
+    ->repliesOnly()
+    ->approved()
+    ->oldest()
+    ->get();
+```
+
+Count approved top-level comments:
+
+```php
+$count = $profile->comments()
+    ->approved()
+    ->topLevel()
+    ->count();
+```
+
 ## ↩️ Reply to a Comment
 
 ```php
