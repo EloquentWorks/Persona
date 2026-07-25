@@ -1,4 +1,4 @@
-# 🎭 Laravel Persona
+# 🧑 Laravel Persona
 
 [![Tests](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml/badge.svg)](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml)
 [![Latest Release](https://img.shields.io/github/v/release/EloquentWorks/Persona)](https://github.com/EloquentWorks/Persona/releases)
@@ -84,7 +84,7 @@ class User extends Authenticatable
 }
 ```
 
-## 🎭 Profiles
+## 🙋 Profiles
 
 Create a profile:
 
