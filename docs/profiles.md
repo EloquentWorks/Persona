@@ -1,4 +1,4 @@
-# 🎭 Profiles
+# 🙋 Profiles
 
 Profiles are the main resource in Laravel Persona.
 
