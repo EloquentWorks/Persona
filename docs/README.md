@@ -1,4 +1,4 @@
-# 🎭 Laravel Persona Documentation
+# 🧑 Laravel Persona Documentation
 
 Welcome to the Laravel Persona documentation.
 
