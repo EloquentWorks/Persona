@@ -209,52 +209,6 @@ Publish the configuration file:
 php artisan vendor:publish --tag=persona-config
 ```
 
-Important options:
-
-```php
-return [
-    'tables' => [
-        'profiles' => 'persona_profiles',
-        'comments' => 'persona_comments',
-        'users' => 'users',
-    ],
-
-    'models' => [
-        'persona' => EloquentWorks\Persona\Models\Persona::class,
-        'comment' => EloquentWorks\Persona\Models\PersonaComment::class,
-        'user' => null,
-    ],
-
-    'storage' => [
-        'disk' => 'public',
-    ],
-
-    'routes' => [
-        'enabled' => true,
-        'show_name' => 'persona.show',
-    ],
-
-    'profiles' => [
-        'require_published_at' => false,
-        'allow_private_profiles' => true,
-    ],
-
-    'usernames' => [
-        'token_interval_months' => 6,
-        'tokens_per_interval' => 1,
-        'max_tokens' => 2,
-        'token_cost' => 1,
-        'unique' => true,
-    ],
-
-    'comments' => [
-        'enabled' => true,
-        'allow_guest_comments' => false,
-        'max_depth' => 2,
-    ],
-];
-```
-
 ## 🧰 Commands
 
 ```bash
