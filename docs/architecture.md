@@ -24,7 +24,7 @@ $user->canChangePersonaUsername();
 $user->changePersonaUsername('signal-nick');
 ```
 
-## 🎭 Persona Model
+## 🧑 Persona Model
 
 The Persona model stores profile fields such as:
 
