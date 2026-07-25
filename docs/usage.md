@@ -1,6 +1,6 @@
-# Usage
+# 🚀 Usage
 
-## Create a profile
+## 👤 Create a profile
 
 ```php
 $profile = $user->createPersona([
@@ -15,7 +15,7 @@ $profile = $user->createPersona([
 ]);
 ```
 
-## Check visibility
+## 👁️ Check visibility
 
 ```php
 $profile->isVisible();
@@ -25,7 +25,7 @@ $visibleProfiles = Persona::visible()->get();
 
 Visibility follows `persona.visibility.require_published_at`.
 
-## Access and update a profile
+## ✏️ Access and update a profile
 
 ```php
 $profile = $user->persona;
@@ -37,7 +37,7 @@ $user->updatePersona([
 ]);
 ```
 
-## Public profile URL
+## 🌐 Public profile URL
 
 ```php
 $url = $profile->url();
@@ -45,7 +45,7 @@ $url = $profile->url();
 $url = $user->personaUrl();
 ```
 
-## Avatar and banner URLs
+## 🖼️ Avatar and banner URLs
 
 ```php
 $avatarUrl = $profile->avatarUrl();
@@ -53,7 +53,7 @@ $avatarUrl = $profile->avatarUrl();
 $bannerUrl = $profile->bannerUrl();
 ```
 
-## Username tokens
+## 🏷️ Username tokens
 
 ```php
 $tokens = $profile->usernameTokens();
@@ -74,7 +74,7 @@ $profile->changeUsername(
 );
 ```
 
-## Comments
+## 💬 Comments
 
 ```php
 $comment = $profile->addComment(
@@ -88,13 +88,13 @@ $reply = $comment->addReply(
 );
 ```
 
-Edit a comment:
+### ✏️ Edit a comment
 
 ```php
 $comment->edit('Updated comment.');
 ```
 
-Approve, pin, or delete:
+### 📌 Approve, pin, or delete
 
 ```php
 $comment->approve();
@@ -104,10 +104,10 @@ $comment->pin();
 $comment->delete();
 ```
 
-See [Profile Comments](comments.md) for the complete comment API.
+See 📖 [Profile Comments](comments.md) for the complete comment API.
 
-## Application validation
+## 🛡️ Application validation
 
 Configuration values such as profile field limits, link limits, allowed social platforms, and guest-comment preferences are intended for the consuming application's form requests and UI.
 
-Persona does not automatically validate arbitrary profile assignments or register comment-management routes.
+Persona does **not** automatically validate arbitrary profile assignments or register comment-management routes.
