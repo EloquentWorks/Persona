@@ -1,74 +1,57 @@
-# 🧑 Laravel Persona
+# 👤 Laravel Persona
 
 [![Tests](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml/badge.svg)](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml)
 [![Latest Release](https://img.shields.io/github/v/release/EloquentWorks/Persona)](https://github.com/EloquentWorks/Persona/releases)
 [![License](https://img.shields.io/github/license/EloquentWorks/Persona)](LICENSE)
 
-Elegant public profile tools for Laravel applications.
+Elegant, customizable public profiles for Laravel applications.
 
-Laravel Persona gives your Eloquent user model a clean way to manage public profiles, unique usernames, username change tokens, display names, mottos, bios, avatars, banners, social links, custom links, visibility, publishing, comments, and profile view tracking.
+Laravel Persona gives an Eloquent user model profile pages, unique public usernames, display names, headlines, mottos, biographies, avatars, banners, social links, custom links, visibility controls, publishing, view tracking, profile comments, completeness scoring, badges, and convenient model helpers.
 
 ```php
-$profile = $user->persona()->create([
-    'slug' => 'signal-nick',
+$profile = $user->createPersona([
     'display_name' => 'Nick',
-    'headline' => 'Laravel Developer',
-    'bio' => 'I build Laravel applications and packages.',
+    'headline' => 'Laravel Package Builder',
+    'motto' => 'Build useful things.',
+    'bio' => 'Building useful Laravel packages.',
+    'location' => 'Kansas',
     'is_public' => true,
     'published_at' => now(),
 ]);
 
-$profile->recordView();
-
-$profile->avatarUrl();
-$profile->bannerUrl();
-$profile->url();
+$url = $user->personaUrl();
+$score = $user->personaCompletenessScore();
 ```
 
-## ✨ Highlights
+## 📋 Supported Versions
 
-- Public user profiles for Eloquent models
-- Slug-based profile URLs
-- Unique usernames backed by profile slugs
-- Configurable username change tokens
-- Username token earning intervals
-- Maximum username token balances
-- Display names, headlines, mottos, bios, and locations
-- Avatar and banner media support
-- Website, social links, and custom links
-- Public and private profile visibility
-- Optional profile publishing controls
-- Profile view tracking
-- Optional guest comments
-- Nested comments with configurable depth
-- Query scopes for public, published, and visible profiles
-- Publishable views
-- Optional built-in profile routes
-- Configurable models, table names, route names, storage disk, and validation limits
+| Package version | PHP | Laravel / Illuminate |
+|---|---:|---:|
+| Current | `^8.2` | `^11.15 || ^12.0 || ^13.0` |
 
-## 📋 Requirements
+Composer resolves the compatible Illuminate packages for the consuming Laravel application.
 
-| Laravel | PHP | Orchestra Testbench |
-| --- | --- | --- |
-| 12.x | 8.2+ | 10.x |
-| 13.x | 8.3+ | 11.x |
+## 🚀 Installation
 
-## 📦 Installation
-
-Install the package through Composer:
+Install Persona:
 
 ```bash
 composer require eloquent-works/persona
 ```
 
-Install Persona:
+Publish the configuration and migrations:
 
 ```bash
 php artisan persona:install
+```
+
+Run the migrations:
+
+```bash
 php artisan migrate
 ```
 
-Add `HasPersona` to your account model:
+Add `HasPersona` to the application user model:
 
 ```php
 <?php
@@ -84,122 +67,237 @@ class User extends Authenticatable
 }
 ```
 
-## 🙋 Profiles
+See [Installation](docs/installation.md) for publishing options and setup guidance.
 
-Create a profile:
+## ✨ Features
+
+- Public or private user profiles
+- Slug-based public usernames and route model binding
+- Configurable username-change tokens
+- Reserved-name, format, length, and uniqueness checks
+- Display names, headlines, mottos, biographies, and locations
+- Avatar and banner URLs through Laravel filesystems
+- Website URLs, social links, and custom links
+- Publishing and configurable visibility requirements
+- Public, published, and visible query scopes
+- Profile view counters
+- Profile comments with replies, approval, pinning, editing, and deletion
+- Profile completeness scoring
+- Custom profile badge awarding
+- Lifecycle events for creation, updates, publishing, unpublishing, and views
+- Publishable views and customizable public routes
+- Configurable models, tables, field limits, feature flags, and storage
+- PHPUnit, PHPStan/Larastan, Laravel Pint, and Composer quality scripts
+
+## 🚀 Quick Start
+
+### Create a profile
 
 ```php
-$profile = $user->persona()->create([
-    'slug' => 'john-doe',
-    'display_name' => 'John Doe',
-    'headline' => 'Laravel Developer',
-    'motto' => 'Ship clean code.',
-    'bio' => 'I build Laravel applications and packages.',
+$profile = $user->createPersona([
+    'display_name' => 'Nick',
+    'headline' => 'Laravel Package Builder',
+    'motto' => 'Build useful things.',
+    'bio' => 'Building useful Laravel packages.',
     'location' => 'Kansas',
+    'website_url' => 'https://example.com',
     'is_public' => true,
     'published_at' => now(),
 ]);
 ```
 
-Read profile URLs and media URLs:
+### Read or update the profile
+
+```php
+$profile = $user->persona;
+
+$user->hasPersona();
+
+$user->updatePersona([
+    'headline' => 'Open-source Laravel Developer',
+]);
+```
+
+### Register the public profile route
+
+Persona does not register public routes automatically.
+
+```php
+use Illuminate\Support\Facades\Route;
+
+Route::persona();
+```
+
+The default route format is:
+
+```text
+/@{persona}
+```
+
+### Generate URLs
 
 ```php
 $profile->url();
-
 $profile->avatarUrl();
-
 $profile->bannerUrl();
+
+$user->personaUrl();
 ```
 
-Track profile views:
+## 👁️ Visibility and Publishing
 
 ```php
-$profile->recordView();
+$profile->isVisible();
+
+$publicProfiles = Persona::public()->get();
+$publishedProfiles = Persona::published()->get();
+$visibleProfiles = Persona::visible()->get();
 ```
 
-## 🪪 Username Tokens
+Visibility follows:
 
-Persona can limit username changes with tokens. By default, a profile can earn tokens over time and spend them when changing usernames.
+```php
+config('persona.visibility.require_published_at');
+```
+
+When `require_published_at` is disabled, a public profile may be visible without a publication timestamp. When enabled, the profile must be public and have a past `published_at` value.
+
+## 🏷️ Username Tokens
+
+Persona uses the profile slug as its public username.
 
 ```php
 $profile->usernameTokens();
-
 $profile->canChangeUsername();
-
+$profile->nextUsernameTokenAt();
+$profile->usernameIsAvailable('signal-nick');
 $profile->changeUsername('signal-nick');
 ```
 
-You can also use helpers on the user model:
+Use the helpers on the user model:
 
 ```php
 $user->personaUsernameTokens();
-
 $user->canChangePersonaUsername();
-
 $user->changePersonaUsername('signal-nick');
 ```
 
-## 🔎 Query Helpers
+An administrative change can skip token spending:
 
 ```php
-use EloquentWorks\Persona\Models\Persona;
-
-Persona::query()->public()->get();
-
-Persona::query()->published()->get();
-
-Persona::query()->visible()->get();
+$profile->changeUsername(
+    'signal-nick',
+    spendToken: false,
+);
 ```
 
-## 🔗 Links and Social Profiles
+Persona normalizes the username and applies the configured length, regular expression, reserved-name, uniqueness, and token rules.
 
-Persona supports profile links and social links.
+## 📊 Completeness
+
+Refresh the profile's completeness score directly:
 
 ```php
-$profile->update([
-    'website_url' => 'https://example.com',
-    'links' => [
-        [
-            'label' => 'GitHub',
-            'url' => 'https://github.com/EloquentWorks',
-        ],
+$score = $profile->refreshCompleteness();
+```
+
+Or through the user model:
+
+```php
+$score = $user->personaCompletenessScore();
+```
+
+The user helper returns `0` when no Persona profile exists.
+
+See [Completeness and Badges](docs/completeness-and-badges.md).
+
+## 🏅 Badges
+
+Award a badge directly through the profile:
+
+```php
+$badge = $profile->awardBadge(
+    'package-builder',
+    [
+        'label' => 'Package Builder',
+        'description' => 'Published a Laravel package.',
     ],
-    'social_links' => [
-        'github' => 'EloquentWorks',
+    $user,
+);
+```
+
+Or use the user-model helper:
+
+```php
+$badge = $user->awardPersonaBadge(
+    'package-builder',
+    [
+        'label' => 'Package Builder',
     ],
-]);
+);
 ```
 
-## 💬 Comments
+The helper returns `null` when the user does not have a Persona profile.
 
-When comments are enabled, profiles can accept comments with configurable depth and guest behavior.
+## 💬 Profile Comments
 
 ```php
-$comment = $profile->comments()->create([
-    'body' => 'Great profile!',
-    'user_id' => auth()->id(),
-]);
+$comment = $profile->addComment(
+    $user,
+    'Great profile.',
+);
 
-$comment->replies()->create([
-    'body' => 'Thank you!',
-    'user_id' => $profile->user_id,
-]);
+$reply = $comment->addReply(
+    $otherUser,
+    'Thank you.',
+);
 ```
 
-## 🛣️ Routes
-
-Persona can register optional profile routes.
+Moderate and edit comments:
 
 ```php
-Route::get('/@{persona:slug}', ShowPersonaController::class)
-    ->name('persona.show');
+$comment->approve();
+$comment->unapprove();
+
+$comment->pin();
+$comment->unpin();
+
+$comment->edit('Updated comment.');
+$comment->delete();
 ```
 
-View a profile:
+Retrieve common comment groups:
 
 ```php
-route('persona.show', $profile);
+$profile->approvedComments()->get();
+$profile->pinnedComments()->get();
+
+PersonaComment::topLevel()->approved()->get();
+PersonaComment::repliesOnly()->get();
+PersonaComment::pinned()->get();
 ```
+
+Persona provides the model API. The consuming application remains responsible for routes, request validation, authorization, rate limiting, spam controls, and guest identity handling.
+
+See [Profile Comments](docs/comments.md).
+
+## 📣 Events
+
+Persona can dispatch:
+
+- `PersonaCreated`
+- `PersonaUpdated`
+- `PersonaPublished`
+- `PersonaUnpublished`
+- `PersonaViewed`
+
+Disable lifecycle events globally:
+
+```php
+'dispatch_events' => false,
+```
+
+See [Events](docs/events.md).
 
 ## ⚙️ Configuration
 
@@ -209,63 +307,84 @@ Publish the configuration file:
 php artisan vendor:publish --tag=persona-config
 ```
 
-## 🧰 Commands
+Major configuration groups include:
 
-```bash
-php artisan persona:install
+```php
+return [
+    'tables' => [],
+    'models' => [],
+    'routes' => [],
+    'usernames' => [],
+    'views' => [],
+    'storage' => [],
+    'slugs' => [],
+    'fields' => [],
+    'comments' => [],
+    'visibility' => [],
+    'links' => [],
+    'features' => [],
+    'dispatch_events' => true,
+];
 ```
 
-Publish assets manually:
-
-```bash
-php artisan vendor:publish --tag=persona-config
-php artisan vendor:publish --tag=persona-migrations
-php artisan vendor:publish --tag=persona-views
-```
-
-## 📚 Documentation
-
-Full documentation is available in the [docs](docs/README.md) directory:
-
-- [Installation](docs/installation.md)
-- [Configuration](docs/configuration.md)
-- [Architecture](docs/architecture.md)
-- [Profiles](docs/profiles.md)
-- [Usernames and Tokens](docs/usernames-and-tokens.md)
-- [Links and Media](docs/links-and-media.md)
-- [Visibility and Publishing](docs/visibility-and-publishing.md)
-- [Comments](docs/comments.md)
-- [Routes](docs/routes.md)
-- [Views and Blade](docs/views-and-blade.md)
-- [Commands](docs/commands.md)
-- [Customization](docs/customization.md)
-- [Security](docs/security.md)
-- [Testing](docs/testing.md)
+See [Configuration](docs/configuration.md) for the complete reference.
 
 ## ✅ Quality Checks
 
+Run all package checks:
+
 ```bash
-composer validate --strict
 composer quality
 ```
 
-Or run the tools separately:
+Or run them separately:
 
 ```bash
 composer format
+composer format:test
 composer analyse
 composer test
 ```
 
+Validate Composer metadata before a release:
+
+```bash
+composer validate --strict
+```
+
+The quality pipeline should complete with zero formatting, PHPStan, or PHPUnit failures.
+
+See [Testing and Quality](docs/testing.md).
+
+## 📚 Documentation
+
+- [Documentation Index](docs/README.md)
+- [Installation](docs/installation.md)
+- [Configuration](docs/configuration.md)
+- [Usage](docs/usage.md)
+- [Completeness and Badges](docs/completeness-and-badges.md)
+- [Profile Comments](docs/comments.md)
+- [Routes](docs/routes.md)
+- [Events](docs/events.md)
+- [Customization](docs/customization.md)
+- [Security](docs/security.md)
+- [Testing and Quality](docs/testing.md)
+
 ## 🔐 Security
 
-Treat public profile input as user-generated content. Validate URLs, escape rendered content, authorize profile edits, and avoid exposing private profile data through search, sitemaps, or public routes.
+Treat every public profile field, URL, link, comment, metadata value, and badge attribute as user-generated or administrator-generated content.
+
+Validate URLs, escape rendered values, authorize profile and comment changes, rate-limit public write endpoints, and avoid exposing private profiles through search, sitemaps, APIs, or public routes.
 
 Security vulnerabilities should be reported privately according to [SECURITY.md](SECURITY.md).
 
 ## 🤝 Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+
+## 🙏 Credits
+
+Built by Eloquent Works.
 
 ## 📄 License
 
