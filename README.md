@@ -27,7 +27,7 @@ $score = $user->personaCompletenessScore();
 
 | Package version | PHP | Laravel / Illuminate |
 |---|---:|---:|
-| Current | `^8.2` | `^11.15 || ^12.0 || ^13.0` |
+| Current | `^8.2` | `^12.0 \|\| ^13.0` |
 
 Composer resolves the compatible Illuminate packages for the consuming Laravel application.
 
