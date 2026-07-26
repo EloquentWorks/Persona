@@ -83,16 +83,25 @@ class PersonaComment extends Model
     }
 
     /**
-     * Get the user that made this comment.
+     * Get the user that authored this comment.
      *
-     * @return BelongsTo<Model, $this> Returns the relationship to the user model.
+     * @return BelongsTo<Model, $this>
      */
     public function user(): BelongsTo
     {
-        // Determine the user model class from the configuration, falling back to the default auth user model if not set.
-        $userModel = config('persona.models.user') ?? config('auth.providers.users.model');
+        $userModel = config('persona.models.user')
+            ?? config('auth.providers.users.model');
 
-        // If no user model is configured, throw an exception to indicate that the user relationship cannot be established.
+        if (
+            ! is_string($userModel)
+            || ! is_a($userModel, Model::class, true)
+        ) {
+            throw new LogicException(
+                'Persona requires a valid Eloquent user model.'
+            );
+        }
+
+        /** @var class-string<Model> $userModel */
         return $this->belongsTo($userModel, 'user_id');
     }
 

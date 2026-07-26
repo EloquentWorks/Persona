@@ -9,6 +9,8 @@ class User extends Authenticatable
 {
     use HasPersona;
 
+    protected $guarded = [];
+
     /** @var list<string> The attributes that are mass assignable. */
     protected $fillable = [
         'name',

@@ -118,14 +118,25 @@ class Persona extends Model
     }
 
     /**
+     * Get the user that owns this profile.
+     *
      * @return BelongsTo<Model, $this>
      */
     public function user(): BelongsTo
     {
-        // Determine the user model class from configuration, falling back to the default user model if not specified.
-        $userModel = config('persona.models.user') ?? config('auth.providers.users.model');
+        $userModel = config('persona.models.user')
+            ?? config('auth.providers.users.model');
 
-        // Validate that the resolved user model is a string and is a subclass of the Eloquent Model class.
+        if (
+            ! is_string($userModel)
+            || ! is_a($userModel, Model::class, true)
+        ) {
+            throw new LogicException(
+                'Persona requires a valid Eloquent user model.'
+            );
+        }
+
+        /** @var class-string<Model> $userModel */
         return $this->belongsTo($userModel, 'user_id');
     }
 
@@ -152,7 +163,6 @@ class Persona extends Model
      */
     public function scopePublic(Builder $query): Builder
     {
-        // Return only profiles that are marked as public.
         return $query->where('is_public', true);
     }
 
@@ -162,7 +172,6 @@ class Persona extends Model
      */
     public function scopePublished(Builder $query): Builder
     {
-        // Return only profiles that have a published_at date that is in the past.
         return $query->whereNotNull('published_at')->where('published_at', '<=', now());
     }
 

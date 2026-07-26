@@ -7,6 +7,7 @@ use EloquentWorks\Persona\Models\PersonaComment;
 use EloquentWorks\Persona\Support\SlugGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use LogicException;
 
 /**
  * Provides Persona profile functionality to Eloquent user models.
@@ -16,12 +17,27 @@ trait HasPersona
     /**
      * Get the Persona profile associated with this model.
      *
-     * @return HasOne Returns the profile relationship.
+     * @return HasOne<Persona, $this>
      */
     public function persona(): HasOne
     {
-        // Return a one-to-one relationship with the Persona model, using the user_id foreign key.
-        return $this->hasOne(config('persona.models.persona', Persona::class), 'user_id');
+        $personaModel = config(
+            'persona.models.persona',
+            Persona::class
+        );
+
+        if (
+            ! is_string($personaModel)
+            || ! is_a($personaModel, Persona::class, true)
+        ) {
+            throw new LogicException(
+                'The configured Persona model must extend '
+                .Persona::class.'.'
+            );
+        }
+
+        /** @var class-string<Persona> $personaModel */
+        return $this->hasOne($personaModel, 'user_id');
     }
 
     /**
@@ -187,37 +203,38 @@ trait HasPersona
     /**
      * Get the completeness score of the Persona profile for this model.
      *
-     * @return int Returns the completeness score (0-100).
+     * @return int Returns the completeness score from 0 to 100.
      */
     public function personaCompletenessScore(): int
     {
-        // Retrieve the Persona profile for this model.
         $profile = $this->persona()->first();
 
-        // If the profile exists and has a method to refresh completeness, call it; otherwise, return 0.
-        return $profile && method_exists($profile, 'refreshCompleteness')
-            ? $profile->refreshCompleteness()
-            : 0;
+        if ($profile === null) {
+            return 0;
+        }
+
+        return $profile->refreshCompleteness();
     }
 
     /**
      * Award a badge to the Persona profile for this model.
      *
      * @param  string  $name  The name of the badge to award.
-     * @param  array<string, mixed>  $attributes  Additional attributes for the badge.
-     * @return mixed Returns the result of awarding the badge, or null if not applicable.
+     * @param  array<string, mixed>  $attributes  Additional badge attributes.
+     * @return mixed The result of awarding the badge, or null when no profile exists.
      */
     public function awardPersonaBadge(string $name, array $attributes = []): mixed
     {
-        // Retrieve the Persona profile for this model.
         $profile = $this->persona()->first();
 
-        // If the profile exists and has a method to award badges, call it; otherwise, return null.
-        if (! $profile || ! method_exists($profile, 'awardBadge')) {
+        if ($profile === null) {
             return null;
         }
 
-        // Delegate the badge awarding to the Persona profile's awardBadge method.
-        return $profile->awardBadge($name, $attributes, $this);
+        return $profile->awardBadge(
+            $name,
+            $attributes,
+            $this
+        );
     }
 }
