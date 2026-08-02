@@ -2,7 +2,7 @@
 
 [![Tests](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml/badge.svg)](https://github.com/EloquentWorks/Persona/actions/workflows/tests.yml)
 [![Latest Release](https://img.shields.io/github/v/release/EloquentWorks/Persona)](https://github.com/EloquentWorks/Persona/releases)
-[![License](https://img.shields.io/github/license/EloquentWorks/Persona)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Elegant, customizable public profiles for Laravel applications.
 
