@@ -30,19 +30,22 @@ class PersonaController extends Controller
         // profile that does not exist when configured to render a private page.
         $profile = $this->resolveProfile($persona);
 
-        // Determine if the current authenticated user is the owner of the profile and whether the profile is visible.
+        // Determine if the current authenticated user is the owner of the profile and if the profile is visible.
         $isOwner = $this->isOwner($profile, $request);
         $isVisible = $profile->isVisible();
 
-        // If the profile is not visible and the current user is not the owner, return the configured private profile response.
-        if (! $isVisible && ! $isOwner) {
-            return $this->privateProfileResponse();
-        }
+        // Determine if owners are allowed to view private profiles based on the configuration.
+        $ownerCanViewPrivate = (bool) config(
+            'persona.visibility.owner_can_view_private',
+            true
+        );
 
-        // If the profile is not visible, the current user is the owner, and the configuration disallows
-        // owners from viewing private profiles, return the configured private profile response.
-        if (! $isVisible && $isOwner && ! config('persona.visibility.owner_can_view_private', true)) {
-            return $this->privateProfileResponse();
+        // If the profile is not visible, check if the current user is the owner
+        // and if owners are allowed to view private profiles.
+        if (! $isVisible) {
+            if (! $isOwner || ! $ownerCanViewPrivate) {
+                return $this->privateProfileResponse();
+            }
         }
 
         // Private-profile placeholder responses never increment views.
@@ -153,5 +156,5 @@ class PersonaController extends Controller
                 'isPrivate' => true,
             ],
         );
-     }
+    }
 }
