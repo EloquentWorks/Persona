@@ -6,8 +6,10 @@ use EloquentWorks\Persona\Events\PersonaViewed;
 use EloquentWorks\Persona\Models\Persona;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use LogicException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Controller responsible for handling public Persona profile views.
@@ -18,20 +20,38 @@ class PersonaController extends Controller
      * Display a public Persona profile.
      *
      * @param  string  $persona  The profile slug from the route.
+     * @param  Request  $request  The incoming HTTP request.
      * @return View Returns the rendered profile page.
      */
-    public function show(string $persona): View
+    public function show(string $persona, Request $request): View
     {
-        // Resolve the Persona profile based on the provided slug.
+        // Resolve the Persona profile by slug without applying the visible
+        // scope yet. This lets Persona distinguish a private profile from a
+        // profile that does not exist when configured to render a private page.
         $profile = $this->resolveProfile($persona);
 
-        // Record a view for the profile if profile views are enabled in the configuration.
-        if (config('persona.features.profile_views', true)) {
+        // Determine if the current authenticated user is the owner of the profile and whether the profile is visible.
+        $isOwner = $this->isOwner($profile, $request);
+        $isVisible = $profile->isVisible();
+
+        // If the profile is not visible and the current user is not the owner, return the configured private profile response.
+        if (! $isVisible && ! $isOwner) {
+            return $this->privateProfileResponse();
+        }
+
+        // If the profile is not visible, the current user is the owner, and the configuration disallows
+        // owners from viewing private profiles, return the configured private profile response.
+        if (! $isVisible && $isOwner && ! config('persona.visibility.owner_can_view_private', true)) {
+            return $this->privateProfileResponse();
+        }
+
+        // Private-profile placeholder responses never increment views.
+        if ($isVisible && config('persona.features.profile_views', true)) {
             $profile->recordView();
         }
 
-        // Dispatch a PersonaViewed event if event dispatching is enabled in the configuration.
-        if (config('persona.dispatch_events', true)) {
+        // Private-profile placeholder responses never dispatch PersonaViewed.
+        if ($isVisible && config('persona.dispatch_events', true)) {
             event(new PersonaViewed($profile));
         }
 
@@ -47,7 +67,7 @@ class PersonaController extends Controller
     }
 
     /**
-     * Resolve a visible profile by slug.
+     * Resolve a profile by slug.
      *
      * @param  string  $slug  The public profile slug.
      * @return Persona Returns the resolved Persona profile.
@@ -65,7 +85,73 @@ class PersonaController extends Controller
         /** @var class-string<Persona> $personaModel */
         $personaModel = $personaModel;
 
-        // Query the Persona model for a visible profile matching the provided slug, throwing a 404 error if not found.
-        return $personaModel::visible()->where('slug', $slug)->firstOrFail();
+        // Resolve by slug first. Visibility is handled by show() so configured
+        // private-profile responses can distinguish private from missing.
+        return $personaModel::query()->where('slug', $slug)->firstOrFail();
     }
+
+    /**
+     * Determine whether the current authenticated user owns the profile.
+     *
+     * @param  Persona  $profile  The Persona profile to check ownership against.
+     * @param  Request  $request  The incoming HTTP request.
+     * @return bool Returns true if the authenticated user owns the profile, false otherwise.
+     */
+    protected function isOwner(Persona $profile, Request $request): bool
+    {
+        // Determine the currently authenticated user from the request.
+        $viewer = $request->user();
+
+        // Validate that the viewer is an instance of the Eloquent Model class. If not, return false.
+        if (! $viewer instanceof Model) {
+            return false;
+        }
+
+        // Retrieve the owner of the profile, which is the associated user model.
+        $owner = $profile->user;
+
+        // Check if the owner is an instance of the Eloquent Model class and if the owner is the same as the viewer.
+        return $owner instanceof Model && $owner->is($viewer);
+    }
+
+    /**
+     * Render the configured response for a private profile.
+     *
+     * The private view intentionally receives no Persona model and no user
+     * model so a customized view cannot accidentally leak private fields.
+     *
+     * @return View Returns the rendered private profile response.
+     */
+    protected function privateProfileResponse(): View
+    {
+        // Determine the configured response for private profiles. If the response is '404',
+        // throw a NotFoundHttpException. If the response is not 'view', throw a LogicException
+        // indicating an invalid configuration value.
+        $response = config('persona.visibility.private_profile_response', '404');
+
+        // If the response is configured to return a 404, throw a NotFoundHttpException
+        // to indicate that the profile was not found.
+        if ($response === '404') {
+            throw new NotFoundHttpException;
+        }
+
+        // If the response is not 'view', throw a LogicException indicating an invalid configuration value.
+        if ($response !== 'view') {
+            throw new LogicException(
+                'Invalid persona.visibility.private_profile_response value. Supported values are [404, view].'
+            );
+        }
+
+        // Determine the view to use for rendering the private profile response, falling back to a default if not configured.
+        $view = config('persona.views.private', 'persona::private');
+
+        // Render the private profile view with a flag indicating that the profile is private.
+        // The view intentionally receives no Persona model and no user model to prevent accidental leakage of private fields.
+        return view(
+            is_string($view) && $view !== '' ? $view : 'persona::private',
+            [
+                'isPrivate' => true,
+            ],
+        );
+     }
 }

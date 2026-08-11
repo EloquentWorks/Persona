@@ -136,6 +136,7 @@ return [
 
     'views' => [
         'show' => 'persona::show',
+        'private' => 'persona::private',
         'layout' => null,
         'retention_days' => 365,
         'hash_ip' => true,
@@ -330,6 +331,26 @@ return [
     'visibility' => [
         'default_public' => true,
         'require_published_at' => false,
+
+        /*
+        |--------------------------------------------------------------------------
+        | Private Profile Response
+        |--------------------------------------------------------------------------
+        |
+        | "404" preserves Persona's historical privacy-by-obscurity behavior.
+        | "view" renders persona.views.private without exposing the profile's
+        | private fields to the view.
+        |
+        | Supported: "404", "view"
+        |
+        */
+        'private_profile_response' => '404',
+
+        /*
+        | Allow an authenticated profile owner to view their own private
+        | profile through the normal public-profile route.
+        */
+        'owner_can_view_private' => true,
     ],
 
     /*

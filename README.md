@@ -162,6 +162,50 @@ config('persona.visibility.require_published_at');
 
 When `require_published_at` is disabled, a public profile may be visible without a publication timestamp. When enabled, the profile must be public and have a past `published_at` value.
 
+### Private profile responses
+
+By default, Persona preserves its historical behavior and returns `404` for
+profiles that are not publicly visible:
+
+```php
+'visibility' => [
+    'private_profile_response' => '404',
+],
+```
+
+Applications may instead render a privacy-safe placeholder:
+
+```php
+'visibility' => [
+    'private_profile_response' => 'view',
+],
+```
+
+The default private view displays:
+
+> This profile is private. This user has chosen to keep their profile private.
+
+The private placeholder intentionally receives no Persona model and no user
+model. This prevents customized placeholder views from accidentally exposing
+private profile fields.
+
+Customize the view with:
+
+```php
+'views' => [
+    'private' => 'profiles.private',
+],
+```
+
+Authenticated profile owners may view their own private profile by default.
+Disable that behavior with:
+
+```php
+'visibility' => [
+    'owner_can_view_private' => false,
+],
+```
+
 ## 🏷️ Username Tokens
 
 Persona uses the profile slug as its public username.
